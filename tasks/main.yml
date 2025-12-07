@@ -1,2 +1,70 @@
 ---
-# tasks file for containerhost
+# main tasks file for containerhost
+
+# see: https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_reuse_roles.html#roles
+
+- name: Populate service facts
+  become: true
+  ansible.builtin.service_facts:
+
+- name: Set timezone
+  become: true
+  community.general.timezone:
+    name: "{{ ch__time_zone }}"
+
+- name: Set hostname to inventory hostname
+  become: true
+  ansible.builtin.hostname:
+    name: "{{ inventory_hostname }}"
+  when: "{{ ch__enforce_inventory_hostname }}"
+
+# I'm sorry, this task should be removed once the required settings are investigated
+- name: Put SELinux in permissive mode
+  become: true
+  ansible.posix.selinux:
+    policy: targeted
+    state: permissive
+
+- name: Enable EPEL repository
+  become: true
+  ansible.builtin.dnf:
+    name: epel-release
+    state: present
+
+- name: Install packages
+  become: true
+  ansible.builtin.dnf:
+    name: "{{ ch__packages_install_dnf }}"
+    state: present
+
+- name: Ensure podman completion line is in .bashrc
+  become: false
+  ansible.builtin.lineinfile:
+    path: "/home/{{ ansible_user }}/.bashrc"
+    line: 'eval "$(podman completion bash)"'
+    create: yes
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0644'
+
+- name: Create a directory if it does not exist
+  become: false
+  ansible.builtin.file:
+    path: /home/{{ ansible_user }}/container-projects
+    state: directory
+    mode: '0755'
+
+- name: Enable and start services
+  become: true
+  ansible.builtin.service:
+    name: "{{ item }}"
+    enabled: true
+    state: restarted
+  with_items: "{{ ch__system_services }}"
+
+### Systemd integration
+- name: Enable linger for container service user
+  become: true
+  ansible.builtin.command:
+    cmd: "loginctl enable-linger {{ ansible_user }}"
+    creates: "/var/lib/systemd/linger/{{ ansible_user }}"

@@ -1,2 +1,23 @@
 ---
 # vars file for containerhost
+# These values are used by the role and not expected to be overridden
+
+ch__system_services:
+  - "firewalld"
+
+ch__packages_install_dnf:
+  - bash-completion   # Needed for "podman completion bash"
+  - bind-utils        # Debug DNS
+  - net-tools         # Debug network, eg ping
+  - nc                # Debug network, tcp
+  - nmap              # Debug network, scan
+  - ntpstat           # Debug NTP
+  - openssl           # Manage and debug SSL / PKI
+  - jq                # JSON processing
+  - tree              # File system utility
+  - git               # Checkout postgres-backup repo for local build
+  - rsync             # Ansible needs for ansible.posix.synchronize
+  - podman            # Podman engine
+  - podman-compose    # Podman compose (EPEL)
+  - buildah
+  - skopeo
