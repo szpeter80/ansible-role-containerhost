@@ -68,3 +68,8 @@
   ansible.builtin.command:
     cmd: "loginctl enable-linger {{ ansible_user }}"
     creates: "/var/lib/systemd/linger/{{ ansible_user }}"
+
+### Container project setup
+- name: Include container project setup tasks
+  ansible.builtin.include_tasks: setup_container_project.yml
+  when: ch__container_project_name is defined

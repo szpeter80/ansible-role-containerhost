@@ -1,0 +1,14 @@
+---
+
+container_project_name: zabbix
+
+firewall_allowed_ports:
+  - "22/tcp"
+  - "80/tcp"
+  - "443/tcp"
+  - "8080/tcp"
+install_agent_to_host: true
+
+zabbix_version: "7.4"
+
+rhel_version: "10"

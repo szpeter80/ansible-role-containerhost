@@ -1,2 +1,13 @@
 ---
 # handlers file for containerhost
+
+- name: "Restart firewalld"
+  become: true
+  ansible.builtin.systemd:
+    name: firewalld
+    state: restarted
+
+- name: "Restart systemd"
+  become: true
+  ansible.builtin.systemd:
+    daemon-reload: true
