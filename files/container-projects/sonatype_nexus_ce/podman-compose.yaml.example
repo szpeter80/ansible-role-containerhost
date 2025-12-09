@@ -18,7 +18,7 @@ services:
       - LANG=en_US.utf8
     restart: unless-stopped
     volumes:
-      - /home/admin/container-projects/sonatype_nexus_ce/200-sonatype_nexus_ce/nexus-data:/sonatype-work:z,ro
+      - /home/admin/container-projects/sonatype_nexus_ce/200-sonatype_nexus_ce/nexus-data:/nexus-data:z,ro
 #    depends_on:
 #      - postgres
    
