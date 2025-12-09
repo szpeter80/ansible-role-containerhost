@@ -120,7 +120,45 @@
     remote_src: yes
     src: "/home/{{ ansible_user }}/container-projects/{{ ch__container_project_name }}/podman-compose.yaml.example"
     dest: "/home/{{ ansible_user }}/container-projects/{{ ch__container_project_name }}/podman-compose.yaml"
-    
+
+- name: Create user pod starter helper script
+  ansible.builtin.copy:
+    dest: "/home/{{ ansible_user }}/container-projects/{{ ch__container_project_name }}/svc.sh"
+    mode: '0755'
+    content: |
+      #!/usr/bin/env bash
+      set -euo pipefail
+
+      svc_action="${1:-}"
+      unit="podman-compose--{{ ch__container_project_name }}.service"
+
+      case "$svc_action" in
+        start)
+          systemctl --user start "$unit"
+          ;;
+
+        stop)
+          systemctl --user stop "$unit"
+          ;;
+
+        restart)
+          systemctl --user restart "$unit"
+          ;;
+
+        status)
+          systemctl --user status "$unit"
+          ;;
+
+        logs)
+          journalctl -ef --user-unit "$unit"
+          ;;
+
+        *)
+          echo "usage: $0 start | stop | restart | logs" >&2
+          exit 1
+          ;;
+      esac
+
 - name: Run project specific tasks
   ansible.builtin.include_tasks: "project_{{ ch__container_project_name }}.yml"
 
@@ -138,16 +176,17 @@
 - name: Generate systemd unit file for {{ ch__container_project_name }}
   become: true
   ansible.builtin.template:
-    src: ansible-templates/podman_compose_systemd_unit.j2
+    src: podman_compose_systemd_unit.j2
     dest: /etc/systemd/user/podman-compose--{{ ch__container_project_name }}.service
     owner: root
     group: root
     mode: u=rw,g=r,o=r
 
-
+### just enable the service, podman-compose must be customized. 
+### after that is generated from template,  state can be set to 'started'
 - name: Enable and start (user) systemd unit for container project {{ ch__container_project_name }}
   ansible.builtin.systemd_service:
     scope: user
     name: "podman-compose--{{ ch__container_project_name }}"
     enabled: true
-    state: started
+    state: stopped

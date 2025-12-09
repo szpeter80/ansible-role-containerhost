@@ -8,7 +8,7 @@ volumes:
 
 services:
 
-  zabbix-server:
+  nexus-server:
     image: docker.io/sonatype/nexus3:3.87.1
     ports:
       - "8081:8081"
