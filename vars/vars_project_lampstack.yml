@@ -1,4 +1,5 @@
 ---
+ch__ip_unprivileged_port_start: '80'
 
 ch__firewall_allowed_ports:
   - "22/tcp"

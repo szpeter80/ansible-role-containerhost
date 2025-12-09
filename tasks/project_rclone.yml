@@ -1,11 +1,7 @@
+###############################################################################
+### Project: rclone as a service in a container
+###############################################################################
+
 ---
 
-- name: "Copy container project files"
-  # https://docs.ansible.com/ansible/latest/collections/ansible/posix/synchronize_module.html#parameters
-  ansible.posix.synchronize:
-    mode: push
-    src: container-projects/{{ container_project_name }}
-    dest: "/home/{{ ansible_user }}/container-projects/"
-    # delete: true
-    recursive: true
-
+# This is a placeholder
