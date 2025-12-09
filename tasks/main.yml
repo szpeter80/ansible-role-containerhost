@@ -16,7 +16,7 @@
   become: true
   ansible.builtin.hostname:
     name: "{{ inventory_hostname }}"
-  when: "{{ ch__enforce_inventory_hostname }}"
+  when: ch__enforce_inventory_hostname
 
 # I'm sorry, this task should be removed once the required settings are investigated
 - name: Put SELinux in permissive mode
@@ -69,7 +69,8 @@
     cmd: "loginctl enable-linger {{ ansible_user }}"
     creates: "/var/lib/systemd/linger/{{ ansible_user }}"
 
-### Container project setup
-- name: Include container project setup tasks
-  ansible.builtin.include_tasks: setup_container_project.yml
-  when: ch__container_project_name is defined
+# FIXME TODO
+### Container project setup - invoker should specify in role parameters, role should check given value in known values list
+#- name: Include container project setup tasks
+#  ansible.builtin.include_tasks: setup_container_project.yml
+#  when: ch__container_project_name is defined
