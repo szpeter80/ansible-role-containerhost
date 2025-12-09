@@ -2,6 +2,12 @@
 # vars file for containerhost
 # These values are used by the role and not expected to be overridden
 
+ch__container_allowed_projects:
+  - lampstack
+  - rclone
+  - zabbix
+  - sonatype_nexus_ce
+
 ch__system_services:
   - "firewalld"
 

@@ -1,7 +1,17 @@
 ---
-# main tasks file for containerhost
+# main tasks file for role containerhost
 
 # see: https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_reuse_roles.html#roles
+
+- name: Validate container project setting
+  assert:
+    that:
+      - ch__container_project_name is defined
+      - ch__container_project_name in ch__container_allowed_projects
+    fail_msg: >-
+      ch__container_project_name is "{{ ch__container_project_name }}",
+      but must be one of: {{ ch__container_allowed_projects | join(', ') }}
+    success_msg: "ch__container_project_name is valid"
 
 - name: Populate service facts
   become: true
@@ -62,15 +72,41 @@
     state: restarted
   with_items: "{{ ch__system_services }}"
 
+###############################################################################
+### Project specific tasks
+###############################################################################
+
+- name: Include project specific vars 
+  ansible.builtin.include_vars:
+    file: "vars_project_{{ ch__container_project_name }}.yml"
+
+- name: Run project specific tasks
+  ansible.builtin.include_tasks: "project_{{ ch__container_project_name }}.yml"
+
+###############################################################################
 ### Systemd integration
+###############################################################################
+
 - name: Enable linger for container service user
   become: true
   ansible.builtin.command:
     cmd: "loginctl enable-linger {{ ansible_user }}"
     creates: "/var/lib/systemd/linger/{{ ansible_user }}"
 
-# FIXME TODO
-### Container project setup - invoker should specify in role parameters, role should check given value in known values list
-#- name: Include container project setup tasks
-#  ansible.builtin.include_tasks: setup_container_project.yml
-#  when: ch__container_project_name is defined
+
+- name: Generate systemd unit file for {{ ch__container_project_name }}
+  become: true
+  ansible.builtin.template:
+    src: ansible-templates/podman_compose_systemd_unit.j2
+    dest: /etc/systemd/user/podman-compose--{{ ch__container_project_name }}.service
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+
+
+- name: Enable and start (user) systemd unit for container project {{ ch__container_project_name }}
+  ansible.builtin.systemd_service:
+    scope: user
+    name: "podman-compose--{{ ch__container_project_name }}"
+    enabled: true
+    state: started

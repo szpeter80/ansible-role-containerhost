@@ -1,7 +1,5 @@
 ---
 
-container_project_name: lampstack
-
 firewall_allowed_ports:
   - "22/tcp"
   - "80/tcp"

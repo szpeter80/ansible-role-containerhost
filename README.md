@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD012 -->
+
 containerhost
 =========
 
@@ -42,14 +44,15 @@ Example Playbook
 
 Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
-```
+```ansible
 ---
 - hosts: my_containerhost
   roles:
     - role: containerhost
       vars:
-        todo: fixme
+        ch__container_project_name: dummy
       tags: example_tag
+
 ```
 
 

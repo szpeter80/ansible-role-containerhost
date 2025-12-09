@@ -7,3 +7,7 @@ ch__time_zone: "Europe/Budapest"
 
 # Set host hostname to inventory hostname
 ch__enforce_inventory_hostname: true
+
+# This specifies which container project to use
+# Valid values are: 
+ch__container_project_name: dummy

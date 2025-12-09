@@ -1,0 +1,24 @@
+---
+- name: Include vars 
+  ansible.builtin.include_vars:
+    file: vars_project_rclone.yaml
+
+
+- name: "Set up host firewall"
+  become: true
+  ansible.posix.firewalld:
+    port: "{{ item }}"
+    state: enabled
+    permanent: true
+  with_items: "{{ firewall_allowed_ports }}"
+  notify: "Restart firewalld"
+
+- name: "Copy container project files"
+  # https://docs.ansible.com/ansible/latest/collections/ansible/posix/synchronize_module.html#parameters
+  ansible.posix.synchronize:
+    mode: push
+    src: container-projects/{{ container_project_name }}
+    dest: "/home/{{ ansible_user }}/container-projects/"
+    # delete: true
+    recursive: true
+
