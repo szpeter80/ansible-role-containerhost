@@ -5,6 +5,11 @@ containerhost
 
 Install and configure a Linux host to run containers in userspace as systemd unit(s)
 
+Errata
+------------
+
+- podman-compose.yaml have to be updated with correct host paths (eg actual user home).  
+  Templating the creation of the compose file can solve this.
 
 Requirements
 ------------
@@ -12,7 +17,7 @@ Requirements
 - A linux host (RHEL10 or compatible) reachable by Ansible via SSH  
   The bare minimum bootable setup is enough, the role will install the required packages
 
-- If cloned from a template, regenerate ssh server keys   
+- If cloned from a template, regenerate ssh server keys  
 (delete keys on RHEL, on Debian after keys delete you need to run `dpkg-reconfigure openssh-server`)
 
 - create your Ansible inventory
