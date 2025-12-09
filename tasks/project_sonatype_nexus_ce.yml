@@ -1,25 +1,5 @@
 ---
 
-- name: Include vars 
-  ansible.builtin.include_vars:
-    file: vars_project_zabbix.yaml
-
-- name: "Install official Zabbix repo for RHEL"
-  become: true
-  ansible.builtin.dnf:
-    name: "https://repo.zabbix.com/zabbix/{{ zabbix_version }}/release/rhel/{{ rhel_version }}/noarch/zabbix-release-latest-{{ zabbix_version }}.el{{ rhel_version }}.noarch.rpm"
-    state: present
-    disable_gpg_check: true
-  when: install_agent_to_host
-
-- name: Install Zabbix agent to Zabbix server host
-  become: true
-  ansible.builtin.package:
-    name: zabbix-agent2
-    state: present
-    update_cache: true
-  when: install_agent_to_host
-
 - name: Configure unprivileged ports in sysctl
   become: true
   ansible.posix.sysctl:
@@ -28,15 +8,6 @@
     sysctl_set: true
     state: present
     reload: true
-
-- name: "Set up host firewall"
-  become: true
-  ansible.posix.firewalld:
-    port: "{{ item }}"
-    state: enabled
-    permanent: true
-  with_items: "{{ firewall_allowed_ports }}"
-  notify: "Restart firewalld"
 
 - name: "Copy container project files"
   # https://docs.ansible.com/ansible/latest/collections/ansible/posix/synchronize_module.html#parameters

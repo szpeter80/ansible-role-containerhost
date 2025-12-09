@@ -1,6 +1,6 @@
 ---
 
-firewall_allowed_ports:
+ch__firewall_allowed_ports:
   - "22/tcp"
   - "80/tcp"
   - "443/tcp"

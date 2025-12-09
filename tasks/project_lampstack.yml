@@ -1,36 +1,4 @@
 ---
-#
-# It is possible to update the container project by calling only the tasks
-# which are tagged with "update"
-#
-
-- name: Configure unprivileged ports in sysctl
-  become: true
-  ansible.posix.sysctl:
-    name: net.ipv4.ip_unprivileged_port_start
-    value: '80'
-    sysctl_set: true
-    state: present
-    reload: true
-
-- name: "Set up host firewall"
-  become: true
-  ansible.posix.firewalld:
-    port: "{{ item }}"
-    state: enabled
-    permanent: true
-  with_items: "{{ firewall_allowed_ports }}"
-  notify: "Restart firewalld"
-
-- name: "Copy container project files"
-  tags: update
-  # https://docs.ansible.com/ansible/latest/collections/ansible/posix/synchronize_module.html#parameters
-  ansible.posix.synchronize:
-    mode: push
-    src: container-projects/{{ container_project_name }}
-    dest: "/home/{{ ansible_user }}/container-projects/"
-    # delete: true
-    recursive: true
 
 
 ###############################################################################

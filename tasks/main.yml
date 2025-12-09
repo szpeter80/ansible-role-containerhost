@@ -3,6 +3,11 @@
 
 # see: https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_reuse_roles.html#roles
 
+#
+# It is possible to update the container project by calling only the tasks
+# which are tagged with "update"
+#
+
 - name: Validate container project setting
   assert:
     that:
@@ -41,7 +46,7 @@
     name: epel-release
     state: present
 
-- name: Install packages
+- name: Install container host required packages
   become: true
   ansible.builtin.dnf:
     name: "{{ ch__packages_install_dnf }}"
@@ -57,14 +62,14 @@
     group: "{{ ansible_user }}"
     mode: '0644'
 
-- name: Create a directory if it does not exist
+- name: Create container-projects directory in user home
   become: false
   ansible.builtin.file:
     path: /home/{{ ansible_user }}/container-projects
     state: directory
     mode: '0755'
 
-- name: Enable and start services
+- name: Enable and start container host services
   become: true
   ansible.builtin.service:
     name: "{{ item }}"
@@ -80,6 +85,42 @@
   ansible.builtin.include_vars:
     file: "vars_project_{{ ch__container_project_name }}.yml"
 
+- name: Set up host firewall
+  become: true
+  ansible.posix.firewalld:
+    port: "{{ item }}"
+    state: enabled
+    permanent: true
+  with_items: "{{ ch__firewall_allowed_ports }}"
+  notify: "Restart firewalld"
+  when: ch__firewall_allowed_ports is defined
+
+- name: Configure unprivileged ports in sysctl
+  become: true
+  ansible.posix.sysctl:
+    name: net.ipv4.ip_unprivileged_port_start
+    value: "{{ ch__ip_unprivileged_port_start }}"
+    sysctl_set: true
+    state: present
+    reload: true
+  when: ch__ip_unprivileged_port_start is defined
+
+- name: Copy project-specific files to containerhost user home
+  tags: update
+  # https://docs.ansible.com/ansible/latest/collections/ansible/posix/synchronize_module.html#parameters
+  ansible.posix.synchronize:
+    mode: push
+    src: ./files/container-projects/{{ ch__container_project_name }}
+    dest: "/home/{{ ansible_user }}/container-projects/"
+    # delete: true
+    recursive: true
+
+- name: Create podman-compose.yaml from example
+  ansible.builtin.copy:
+    remote_src: yes
+    src: "/home/{{ ansible_user }}/container-projects/{{ ch__container_project_name }}/podman-compose.yaml.example"
+    dest: "/home/{{ ansible_user }}/container-projects/{{ ch__container_project_name }}/podman-compose.yaml"
+    
 - name: Run project specific tasks
   ansible.builtin.include_tasks: "project_{{ ch__container_project_name }}.yml"
 

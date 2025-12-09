@@ -32,6 +32,8 @@ Role Variables
 
 FIXME TODO
 
+Until that, please see defaults/main.yml and vars/*
+
 
 Dependencies
 ------------
@@ -42,7 +44,7 @@ None
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+Contents of containerhost.yml:
 
 ```ansible
 ---
@@ -55,6 +57,8 @@ Including an example of how to use your role (for instance, with variables passe
 
 ```
 
+Invocation: `ansible-playbook -e ch__container_project_name=lampstack containerhost.yml`
+Update:  `ansible-playbook -e ch__container_project_name=lampstack -t update containerhost.yml`
 
 License
 -------
