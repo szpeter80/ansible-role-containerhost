@@ -20,16 +20,18 @@ Requirements
 - If cloned from a template, regenerate ssh server keys  
 (delete keys on RHEL, on Debian after keys delete you need to run `dpkg-reconfigure openssh-server`)
 
-- create your Ansible inventory
-  - set `ansible_user` to the user which will run your containers. Ansible will use the same user to connect
-  - set your `inventory_hostname` to the external fqdn of the host - the role will update the acual real hostname to the one set in the inventory, unless you disable this feature
-
 - copy ssh keys for passworldess connection
+- register fqdn of the host to the DNS
+- if you use DHCP, set a reservation
+- check if time sync is avaiable  
 - enable passwordless sudo  
 `echo 'containeradmin        ALL=(ALL)       NOPASSWD: ALL' >/etc/sudoers.d/containeradmin_nopasswd`
-- check if time sync is avaiable
-- if you use DHCP, set a reservation
-- register fqdn of the host to the DNS
+  
+- create your Ansible inventory
+  - set `ansible_user` to the user which will run your containers.
+    Ansible will use the same user to connect
+  - set your `inventory_hostname` to the external fqdn of the host
+    The role will set the hostname to the value of `inventory_hostname` (unless this function is disabled)
 
 
 Role Variables
@@ -62,8 +64,11 @@ Contents of containerhost.yml:
 
 ```
 
-Invocation: `ansible-playbook -e ch__container_project_name=lampstack containerhost.yml`
-Update:  `ansible-playbook -e ch__container_project_name=lampstack -t update containerhost.yml`
+**Invocation:**  
+`ansible-playbook -e ch__container_project_name=lampstack containerhost.yml`
+
+**Update:**  
+`ansible-playbook -e ch__container_project_name=lampstack -t update containerhost.yml`
 
 License
 -------
