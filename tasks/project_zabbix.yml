@@ -24,14 +24,14 @@
 - name: Git checkout "postgres-backup" project
   # noqa: latest
   ansible.builtin.git:
-    repo: 'https://github.com/szpeter80/misc.git'
+    repo: 'https://github.com/szpeter80/containers.git'
     dest: /home/{{ ansible_user }}/container-projects/{{ ch__container_project_name }}/900-postgresql/postgres-backup/repo
 
 
 - name: Build "postgres-backup" image
   containers.podman.podman_image:
     name: local/postgresql-backup:latest
-    path: /home/{{ ansible_user }}/container-projects/{{ ch__container_project_name }}/900-postgresql/postgres-backup/repo/containers/pg-backup
+    path: /home/{{ ansible_user }}/container-projects/{{ ch__container_project_name }}/900-postgresql/postgres-backup/repo/pg-backup
     build:
       # cache: false
       rm: true
