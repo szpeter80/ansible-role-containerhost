@@ -1,15 +1,15 @@
 ---
 
-ch__ip_unprivileged_port_start: '80'
+containerhost__ip_unprivileged_port_start: '80'
 
-ch__firewall_allowed_ports:
+containerhost__firewall_allowed_ports:
   - "22/tcp"
   - "80/tcp"
   - "443/tcp"
   - "8080/tcp"
 
-ch__zabbix__install_agent_to_managed_host: true
+containerhost__zabbix__install_agent_to_managed_host: true
 
-ch__zabbix__zabbix_version: "7.4"
+containerhost__zabbix__zabbix_version: "7.4"
 
-ch__zabbix__rhel_version: "10"
+containerhost__zabbix__rhel_version: "10"

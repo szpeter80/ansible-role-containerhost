@@ -2,16 +2,16 @@
 # vars file for containerhost
 # These values are used by the role and not expected to be overridden
 
-ch__container_allowed_projects:
+containerhost__container_allowed_projects:
   - lampstack
   - rclone
   - zabbix
   - sonatype_nexus_ce
 
-ch__system_services:
+containerhost__system_services:
   - "firewalld"
 
-ch__packages_install_dnf:
+containerhost__packages_install_dnf:
   - bash-completion   # Needed for "podman completion bash"
   - bind-utils        # Debug DNS
   - net-tools         # Debug network, eg ping

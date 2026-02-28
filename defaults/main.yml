@@ -3,11 +3,14 @@
 # These values are expected to be overridden as the environment requires
 
 # Set host timezone
-ch__time_zone: "Europe/Budapest"
+containerhost__time_zone: "Europe/Budapest"
 
 # Set host hostname to inventory hostname
-ch__enforce_inventory_hostname: true
+containerhost__enforce_inventory_hostname: true
 
 # This specifies which container project to use
-# Valid values are: 
-ch__container_project_name: dummy
+# Valid values are:
+containerhost__container_project_name: dummy
+
+# Install fail2ban to protect SSH
+containerhost__enable_fail2ban: true

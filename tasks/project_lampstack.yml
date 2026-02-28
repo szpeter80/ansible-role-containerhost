@@ -10,13 +10,13 @@
   # noqa: latest
   ansible.builtin.git:
     repo: 'https://github.com/szpeter80/misc.git'
-    dest: /home/{{ ansible_user }}/container-projects/{{ ch__container_project_name }}/900-mariadb/mariadb-backup/repo
+    dest: /home/{{ ansible_user }}/container-projects/{{ containerhost__container_project_name }}/900-mariadb/mariadb-backup/repo
 
 
 - name: Build "mariadb-backup" image
   containers.podman.podman_image:
     name: local/mariadb-backup:latest
-    path: /home/{{ ansible_user }}/container-projects/{{ ch__container_project_name }}/900-mariadb/mariadb-backup/repo/containers/mariadb-backup
+    path: /home/{{ ansible_user }}/container-projects/{{ containerhost__container_project_name }}/900-mariadb/mariadb-backup/repo/containers/mariadb-backup
     build:
       # cache: false
       rm: true

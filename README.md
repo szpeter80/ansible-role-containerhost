@@ -59,16 +59,16 @@ Contents of containerhost.yml:
   roles:
     - role: containerhost
       vars:
-        ch__container_project_name: dummy
+        containerhost__container_project_name: dummy
       tags: example_tag
 
 ```
 
 **Invocation:**  
-`ansible-playbook -e ch__container_project_name=lampstack containerhost.yml`
+`ansible-playbook -e containerhost__container_project_name=lampstack containerhost.yml`
 
 **Update:**  
-`ansible-playbook -e ch__container_project_name=lampstack -t update containerhost.yml`
+`ansible-playbook -e containerhost__container_project_name=lampstack -t update containerhost.yml`
 
 License
 -------
