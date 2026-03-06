@@ -163,10 +163,9 @@
     # delete: true
     recursive: true
 
-- name: Create podman-compose.yaml from example
-  ansible.builtin.copy:
-    remote_src: true
-    src: "/home/{{ ansible_user }}/container-projects/{{ containerhost__container_project_name }}/podman-compose.yaml.example"
+- name: Create podman-compose.yaml from template
+  ansible.builtin.template:
+    src: "podman-compose--{{ containerhost__container_project_name }}.j2"
     dest: "/home/{{ ansible_user }}/container-projects/{{ containerhost__container_project_name }}/podman-compose.yaml"
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"

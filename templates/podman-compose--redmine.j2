@@ -1,0 +1,17 @@
+---
+### https://docs.docker.com/compose/compose-file/
+
+
+services:
+
+  redmine:
+    # https://hub.docker.com/_/redmine#-via-docker-compose
+    image: docker.io/library/redmine:6.1-alpine
+    ports:
+      - 8080:3000
+    environment:
+      - TZ=Europe/Budapest
+      - REDMINE_DB_MYSQL: db
+      - REDMINE_DB_PASSWORD: example
+      - REDMINE_SECRET_KEY_BASE: supersecretkey
+    restart: unless-stopped

@@ -1,0 +1,55 @@
+---
+### https://docs.docker.com/compose/compose-file/
+
+volumes:
+  mariadb-data:
+
+services:
+
+  pma:
+    # https://hub.docker.com/_/phpmyadmin
+    image: docker.io/library/phpmyadmin:5.2.2-apache
+# PHPMyAdmin listens on port 80, haproxy terminates SSL / TLS 
+#    ports:
+#      - 9090:80
+    environment:
+#      - PMA_ABSOLUTE_URI=https://snakeoil.example.com/phpmyadmin
+      - TZ=Europe/Budapest
+      - PMA_HOST=mariadb
+      - UPLOAD_LIMIT=100M
+    restart: unless-stopped
+    volumes:
+      - /home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php:z
+    depends_on:
+      - mariadb
+
+
+  mariadb:
+    # For MySQL migration: https://mariadb.com/kb/en/mariadb-vs-mysql-compatibility/
+    # https://hub.docker.com/_/mariadb
+    #image: docker.io/library/mariadb:10.11.8-ubi9
+    image: docker.io/library/mariadb:10.4.34-focal
+    # command: '--default-authentication-plugin=mysql_native_password'
+    environment:
+      - MYSQL_ROOT_PASSWORD=foobar
+      - MYSQL_DATABASE=projectdb
+      - MYSQL_USER=projectdb-user
+      - MYSQL_PASSWORD=projectdb-password
+    restart: unless-stopped
+    volumes:
+      - mariadb-data:/var/lib/mysql
+      - /home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/dbdumps:/mnt/mariadb-backups:z,ro
+
+  mariadb-backup:
+    image: localhost/local/mariadb-backup:latest
+    environment:
+      - MARIADB_HOSTNAME=mariadb
+      - MARIADB_PORT=3306
+      - MARIADB_USERNAME=root
+      - MARIADB_PASSWORD=foobar
+      - BACKUP_RETENTION_DAYS=30
+    restart: unless-stopped
+    volumes:
+      - /home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/dbdumps:/mnt/mariadb-backups:z
+    depends_on:
+      - mariadb

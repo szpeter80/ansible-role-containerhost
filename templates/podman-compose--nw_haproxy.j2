@@ -1,0 +1,25 @@
+---
+### https://docs.docker.com/compose/compose-file/
+
+volumes:
+  mariadb-data:
+
+services:
+
+  haproxy:
+    # https://www.haproxy.com/documentation/haproxy-configuration-manual/latest/
+    # https://hub.docker.com/_/haproxy
+    image: docker.io/library/haproxy:3.3-alpine
+    ports:
+      - 80:8080
+      - 443:8443
+      - 8081:8081
+    cap_add:
+      - CAP_NET_ADMIN
+#      - CAP_NET_BIND_SERVICE
+    environment:
+      - TZ=Europe/Budapest
+    restart: unless-stopped
+    volumes:
+      - /home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/certs:/etc/ssl/certs:z,ro
+      - /home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:z,ro

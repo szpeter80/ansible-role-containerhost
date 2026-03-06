@@ -1,5 +1,4 @@
 ---
-
 containerhost__ip_unprivileged_port_start: '80'
 
 containerhost__firewall_allowed_ports:
@@ -9,7 +8,5 @@ containerhost__firewall_allowed_ports:
   - "8080/tcp"
 
 containerhost__zabbix__install_agent_to_managed_host: true
-
 containerhost__zabbix__zabbix_version: "7.4"
-
 containerhost__zabbix__rhel_version: "10"

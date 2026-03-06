@@ -3,10 +3,15 @@
 # These values are used by the role and not expected to be overridden
 
 containerhost__container_allowed_projects:
+  - nw_haproxy
+  - db_postgresql
+  - db_mariadb
   - lampstack
   - rclone
   - zabbix
   - sonatype_nexus_ce
+  - redmine
+  - gitlab
 
 containerhost__system_services:
   - "firewalld"
@@ -19,9 +24,10 @@ containerhost__packages_install_dnf:
   - nmap              # Debug network, scan
   - ntpstat           # Debug NTP
   - openssl           # Manage and debug SSL / PKI
+  - open-vm-tools     # VM tools for VM guests
   - jq                # JSON processing
   - tree              # File system utility
-  - git               # Checkout postgres-backup repo for local build
+  - git               # Checkout Containerfile repo for local build
   - rsync             # Ansible needs for ansible.posix.synchronize
   - podman            # Podman engine
   - podman-compose    # Podman compose (EPEL)
