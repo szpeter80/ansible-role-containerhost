@@ -32,6 +32,7 @@ services:
 # Limitation: .gitlab-ci.yml jobs cannot use image, jobs are not isolated
 # This works fine with Podman installed locally if your scripts call podman manually.
 # https://docs.gitlab.com/runner/install/docker/
+
   gitlab-runner:
     # https://hub.docker.com/r/gitlab/gitlab-runner
     image: docker.io/library/gitlab-runner:latest

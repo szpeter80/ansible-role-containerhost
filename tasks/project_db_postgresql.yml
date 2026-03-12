@@ -1,0 +1,24 @@
+###############################################################################
+### Project: PostgreSQL in a container
+###############################################################################
+
+---
+
+### Local build of postgres-backup container
+
+- name: Git checkout "postgres-backup" project
+  # noqa: latest
+  ansible.builtin.git:
+    repo: 'https://github.com/szpeter80/containers.git'
+    dest: /home/{{ ansible_user }}/container-projects/{{ containerhost__container_project_name }}/postgres-backup-repo
+
+- name: Build "postgres-backup" image
+  containers.podman.podman_image:
+    name: local/postgresql-backup:latest
+    path: /home/{{ ansible_user }}/container-projects/{{ containerhost__container_project_name }}/postgres-backup-repo/pg-backup
+    build:
+      # cache: false
+      rm: true
+      format: oci
+      annotation:
+        info: "Locally built image"

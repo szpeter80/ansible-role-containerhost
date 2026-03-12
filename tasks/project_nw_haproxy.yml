@@ -4,4 +4,8 @@
 
 ---
 
-# This is a placeholder
+- name: Create dummy self-signed certificates
+  ansible.builtin.command:
+    chdir: "/home/{{ ansible_user }}/container-projects/{{ containerhost__container_project_name }}"
+    cmd: "./gen-snakeoil-cert.sh"
+    creates: "/home/{{ ansible_user }}/container-projects/{{ containerhost__container_project_name }}/certs/snakeoil.pem"

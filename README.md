@@ -1,9 +1,15 @@
 <!-- markdownlint-disable MD012 -->
 
 containerhost
-=========
+=============
 
 Install and configure a Linux host to run containers in userspace as systemd unit(s)
+
+TODO
+----
+
+- refactor haproxy to include the ansible inventory name/address in the self signed cert
+
 
 Errata
 ------------
@@ -36,15 +42,13 @@ Requirements
 Role Variables
 --------------
 
-FIXME TODO
+For the comprehensive list, please see `defaults/main.yml` and `vars/*`.
 
-Until that, please see defaults/main.yml and vars/*
+Valid project names:
 
+- nw_haproxy: HAProxy for listening on tcp/80 + tcp/443
 
-Dependencies
-------------
-
-None
+- db_postgresql: PostgreSQL database and a dumping containers
 
 
 Example Playbook
@@ -58,7 +62,18 @@ Contents of containerhost.yml:
   roles:
     - role: containerhost
       vars:
+        # Set host timezone
+        containerhost__time_zone: "Europe/Budapest"
+
+        # Set host hostname to inventory hostname
+        containerhost__enforce_inventory_hostname: true
+
+        # Install fail2ban to protect SSH
+        containerhost__enable_fail2ban: true
+
+        # This specifies which container project to use
         containerhost__container_project_name: dummy
+
       tags: example_tag
 
 ```
