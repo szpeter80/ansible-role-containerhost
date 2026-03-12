@@ -8,8 +8,7 @@ Install and configure a Linux host to run containers in userspace as systemd uni
 Errata
 ------------
 
-- podman-compose.yaml have to be updated with correct host paths (eg actual user home).  
-  Templating the creation of the compose file can solve this.
+None known at this time.
 
 Requirements
 ------------
