@@ -179,6 +179,14 @@
     group: "{{ ansible_user }}"
     mode: '0755'
 
+- name: Create env declarations to use in scripts
+  ansible.builtin.template:
+    src: "environment.env.j2"
+    dest: "/home/{{ ansible_user }}/container-projects/environment.env"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0755'
+
 - name: Run project specific tasks
   ansible.builtin.include_tasks: "project_{{ containerhost__container_project_name }}.yml"
 

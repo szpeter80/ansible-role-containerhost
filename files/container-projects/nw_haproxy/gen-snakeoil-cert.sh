@@ -1,10 +1,16 @@
 #!/bin/bash
 
+C_HOST_NAME="snakeoil.example.com"
+C_HOST_ADDRESS="192.168.1.1"
+
+# shellcheck disable=SC1091
+. ../../environment.env
+
 openssl req -new \
     -newkey rsa:4096 -nodes -keyout ./certs/snakeoil.key \
     -out ./certs/snakeoil.csr \
-    -subj "/C=US/ST=Krakosia/L=City/O=ACME corp/CN=*.snakeoil.example.com" \
-    -addext "subjectAltName=DNS:snakeoil.example.com,DNS:*.snakeoil.example.com,IP:192.168.1.1"
+    -subj "/C=US/ST=Krakosia/L=City/O=ACME corp/CN=${C_HOST_NAME}" \
+    -addext "subjectAltName=DNS:${C_HOST_NAME},DNS:*.${C_HOST_NAME},IP:${C_HOST_ADDRESS}"
 
 # Blindly copying extensions from the CSR is a bad practice for a real CA, but will do for a dummy one
 openssl x509 -req -days 3650 -in ./certs/snakeoil.csr -signkey ./certs/snakeoil.key -out ./certs/snakeoil.crt -copy_extensions copyall
