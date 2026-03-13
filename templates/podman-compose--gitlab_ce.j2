@@ -15,7 +15,8 @@ services:
       - '443:443'
       - '2424:22'
     environment:
-      - TZ=Europe/Budapest
+      - TZ={{ containerhost__time_zone }}
+      - LANG=en_US.utf8
       - GITLAB_OMNIBUS_CONFIG: |
         # Add any other gitlab.rb configuration here, each on its own line
         external_url 'http://gitlab.example.com:8929'
@@ -38,7 +39,8 @@ services:
     image: docker.io/library/gitlab-runner:latest
     ports:
     environment:
-      - TZ=Europe/Budapest
+      - TZ={{ containerhost__time_zone }}
+      - LANG=en_US.utf8
 
     volumes:
       - '/home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/gitlab-runner/config:/etc/gitlab-runner'

@@ -12,7 +12,7 @@ services:
   rclone_svc:
     image: docker.io/rclone/rclone:1.68
     environment:
-      - TZ=Europe/Budapest
+      - TZ={{ containerhost__time_zone }}
       - LANG=en_US.utf8
 
       # Even the maximum backlog is finite, if the remote contains too many files, 

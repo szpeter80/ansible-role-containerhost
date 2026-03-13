@@ -12,5 +12,8 @@ containerhost__enforce_inventory_hostname: true
 containerhost__enable_fail2ban: true
 
 # This specifies which container project to use
-# Valid values are:
 containerhost__container_project_name: dummy
+
+# To prevent autostart of generated systemd unit for the pod
+# override it to 'stopped'
+containerhost__podman_systemd_unit_initial_state: restarted

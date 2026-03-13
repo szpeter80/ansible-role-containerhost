@@ -210,11 +210,9 @@
     group: root
     mode: u=rw,g=r,o=r
 
-### just enable the service, podman-compose must be customized.
-### after that is generated from template,  state can be set to 'started'
 - name: Enable and start (user) systemd unit for container project {{ containerhost__container_project_name }}
   ansible.builtin.systemd_service:
     scope: user
     name: "podman-compose--{{ containerhost__container_project_name }}"
     enabled: true
-    state: stopped
+    state: "{{ containerhost__podman_systemd_unit_initial_state }}"

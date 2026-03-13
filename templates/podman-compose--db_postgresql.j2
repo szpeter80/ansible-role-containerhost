@@ -9,7 +9,7 @@ services:
   postgres:
     image: docker.io/library/postgres:17-bullseye
     environment:
-      - TZ=Europe/Budapest
+      - TZ={{ containerhost__time_zone }}
       - LANG=en_US.utf8
       - PGDATA=/var/lib/postgresql/data
       - POSTGRES_PASSWORD=dummy
@@ -21,7 +21,7 @@ services:
   postgres-backup:
     image: localhost/local/postgresql-backup:latest
     environment:
-      - TZ=Europe/Budapest
+      - TZ={{ containerhost__time_zone }}
       - LANG=en_US.utf8
       - DATA_DIR=/mnt/postgres-backups
       - INSTALL_DIR=/root/scripts

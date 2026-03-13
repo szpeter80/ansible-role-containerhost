@@ -1,11 +1,6 @@
 ---
 ### https://docs.docker.com/compose/compose-file/
 
-# Don't forget to update the volume mount paths to contain the actual user homedir who will run the containers
-
-volumes:
-#  postgres-data:
-
 services:
 
   nexus-server:
@@ -14,7 +9,7 @@ services:
       - "8081:8081"
       - "8085:8085"
     environment:
-      - TZ=Europe/Budapest
+      - TZ={{ containerhost__time_zone }}
       - LANG=en_US.utf8
     restart: unless-stopped
     volumes:

@@ -10,7 +10,8 @@ services:
     ports:
       - 8080:3000
     environment:
-      - TZ=Europe/Budapest
+      - TZ={{ containerhost__time_zone }}
+      - LANG=en_US.utf8
       - REDMINE_DB_MYSQL: db
       - REDMINE_DB_PASSWORD: example
       - REDMINE_SECRET_KEY_BASE: supersecretkey
