@@ -7,6 +7,10 @@
 # 1 - create rclone config:     podman exec -ti rclone_rclone_svc_1 /bin/bash -c "rclone config"
 # 2 - when asked "Use web browser to automatically authenticate rclone with remote?" say NO
 
+networks:
+  containerhost:
+    external: true
+
 services:
 
   rclone_svc:

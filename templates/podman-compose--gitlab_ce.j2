@@ -1,6 +1,9 @@
 ---
 ### https://docs.docker.com/compose/compose-file/
 
+networks:
+  containerhost:
+    external: true
 
 services:
 
@@ -10,6 +13,8 @@ services:
     image: docker.io/library/gitlab-ce:18.9.1-ce.0
     hostname: 'gitlab.example.com'
     shm_size: '256m'
+    networks:
+      - containerhost
     ports:
       - '8929:8929'
       - '443:443'

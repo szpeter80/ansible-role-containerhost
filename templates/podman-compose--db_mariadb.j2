@@ -3,7 +3,7 @@
 
 networks:
   containerhost:
-    driver: bridge
+    external: true
 
 volumes:
   mariadb-data:
@@ -12,16 +12,21 @@ services:
 
   pma:
     # https://hub.docker.com/_/phpmyadmin
-    image: docker.io/library/phpmyadmin:5.2.2-apache
+    image: docker.io/library/phpmyadmin:5.2-apache
 # PHPMyAdmin listens on port 80, haproxy terminates SSL / TLS 
 #    ports:
 #      - 9090:80
+    networks:
+      - containerhost
     environment:
       - TZ={{ containerhost__time_zone }}
       - LANG=en_US.utf8
+      - PMA_CHARSET=utf8mb4
+      - PMA_COLLATION_CONNECTION=utf8mb4_unicode_ci
 #      - PMA_ABSOLUTE_URI=https://snakeoil.example.com/phpmyadmin
       - PMA_HOST=mariadb
-      - UPLOAD_LIMIT=100M
+      - UPLOAD_LIMIT=1000M
+
     restart: unless-stopped
     volumes:
       - /home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php:z
@@ -34,7 +39,10 @@ services:
     # https://hub.docker.com/_/mariadb
     #image: docker.io/library/mariadb:10.11.8-ubi9
     image: docker.io/library/mariadb:10.4.34-focal
-    # command: '--default-authentication-plugin=mysql_native_password'
+    command: 
+      - --character-set-server=utf8mb4 
+      - --collation-server=utf8mb4_unicode_ci
+#      - --default-authentication-plugin=mysql_native_password
     environment:
       - TZ={{ containerhost__time_zone }}
       - LANG=en_US.utf8

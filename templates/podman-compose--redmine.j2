@@ -2,11 +2,18 @@
 ### https://docs.docker.com/compose/compose-file/
 
 
+networks:
+  containerhost:
+    external: true
+    
 services:
 
   redmine:
     # https://hub.docker.com/_/redmine#-via-docker-compose
     image: docker.io/library/redmine:6.1-alpine
+    networks:
+      - containerhost
+
     ports:
       - 8080:3000
     environment:

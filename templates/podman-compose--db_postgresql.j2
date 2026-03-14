@@ -1,6 +1,10 @@
 ---
 ### https://docs.docker.com/compose/compose-file/
 
+networks:
+  containerhost:
+    external: true
+
 volumes:
   postgres-data:
 
@@ -8,6 +12,8 @@ services:
 
   postgres:
     image: docker.io/library/postgres:17-bullseye
+    networks:
+      - containerhost
     environment:
       - TZ={{ containerhost__time_zone }}
       - LANG=en_US.utf8
@@ -20,6 +26,8 @@ services:
 
   postgres-backup:
     image: localhost/local/postgresql-backup:latest
+    networks:
+      - containerhost
     environment:
       - TZ={{ containerhost__time_zone }}
       - LANG=en_US.utf8

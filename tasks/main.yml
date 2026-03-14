@@ -187,6 +187,17 @@
     group: "{{ ansible_user }}"
     mode: '0755'
 
+- name: Check if network exists
+  ansible.builtin.command: podman network exists containerhost
+  register: containerhost__net_check
+  failed_when: false
+  changed_when: false
+
+- name: Create network if it does not exist
+  ansible.builtin.command: podman network create containerhost
+  when: containerhost__net_check.rc != 0
+  changed_when: containerhost__net_check.rc != 0
+
 - name: Run project specific tasks
   ansible.builtin.include_tasks: "project_{{ containerhost__container_project_name }}.yml"
 

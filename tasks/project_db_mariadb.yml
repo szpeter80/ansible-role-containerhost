@@ -9,17 +9,25 @@
 - name: Git checkout "mariadb-backup" project
   # noqa: latest
   ansible.builtin.git:
-    repo: 'https://github.com/szpeter80/misc.git'
-    dest: /home/{{ ansible_user }}/container-projects/{{ containerhost__container_project_name }}/900-mariadb/mariadb-backup/repo
+    repo: 'https://github.com/szpeter80/containers.git'
+    dest: /home/{{ ansible_user }}/container-projects/{{ containerhost__container_project_name }}/mariadb-backup/repo
 
 
 - name: Build "mariadb-backup" image
   containers.podman.podman_image:
     name: local/mariadb-backup:latest
-    path: /home/{{ ansible_user }}/container-projects/{{ containerhost__container_project_name }}/900-mariadb/mariadb-backup/repo/containers/mariadb-backup
+    path: /home/{{ ansible_user }}/container-projects/{{ containerhost__container_project_name }}/mariadb-backup/repo/mariadb-backup
     build:
       # cache: false
       rm: true
       format: oci
       annotation:
         info: "Locally built image"
+
+- name: Create PHPMyadmin initial config
+  ansible.builtin.template:
+    src: "pma_config.user.inc.php.j2"
+    dest: "/home/{{ ansible_user }}/container-projects/{{ containerhost__container_project_name }}/phpmyadmin/config.user.inc.php"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0755'
