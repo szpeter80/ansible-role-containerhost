@@ -7,29 +7,29 @@ networks:
 
 services:
 
-  # https://docs.gitlab.com/install/docker/installation/#install-gitlab-by-using-docker-compose
+# https://docs.gitlab.com/install/docker/installation/#install-gitlab-by-using-docker-compose
   gitlab-ce:
-    # https://hub.docker.com/r/gitlab/gitlab-ce
-    image: docker.io/library/gitlab-ce:18.9.1-ce.0
+#   https://hub.docker.com/r/gitlab/gitlab-ce
+    image: docker.io/gitlab/gitlab-ce:18.9.2-ce.0
     hostname: 'gitlab.example.com'
     shm_size: '256m'
     networks:
       - containerhost
     ports:
-      - '8929:8929'
-      - '443:443'
-      - '2424:22'
+#      - '8929:8929'
+#      - '443:443'
+#      - '2424:22'
     environment:
-      - TZ={{ containerhost__time_zone }}
-      - LANG=en_US.utf8
-      - GITLAB_OMNIBUS_CONFIG: |
+      TZ: {{ containerhost__time_zone }}
+      LANG: en_US.utf8
+      GITLAB_OMNIBUS_CONFIG: |
         # Add any other gitlab.rb configuration here, each on its own line
-        external_url 'http://gitlab.example.com:8929'
+        external_url 'https://{{ ansible_host }}/gitlab'
         gitlab_rails['gitlab_shell_ssh_port'] = 2424
     volumes:
-      - '/home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/config:/etc/gitlab'
-      - '/home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/logs:/var/log/gitlab'
-      - '/home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/data:/var/opt/gitlab'
+      - '/home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/gitlab_ce/config:/etc/gitlab'
+      - '/home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/gitlab_ce/logs:/var/log/gitlab'
+      - '/home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/gitlab_ce/data:/var/opt/gitlab'
     restart: unless-stopped
 
 # If you use the shell executor. Then no container socket is required.
@@ -38,15 +38,15 @@ services:
 # Limitation: .gitlab-ci.yml jobs cannot use image, jobs are not isolated
 # This works fine with Podman installed locally if your scripts call podman manually.
 # https://docs.gitlab.com/runner/install/docker/
-
-  gitlab-runner:
-    # https://hub.docker.com/r/gitlab/gitlab-runner
-    image: docker.io/library/gitlab-runner:latest
-    ports:
-    environment:
-      - TZ={{ containerhost__time_zone }}
-      - LANG=en_US.utf8
-
-    volumes:
-      - '/home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/gitlab-runner/config:/etc/gitlab-runner'
-    restart: unless-stopped
+# FIXME: https://gitlab.com/gitlab-org/gitlab-runner/-/work_items/1285
+###  gitlab-runner:
+###    image: docker.io/gitlab/gitlab-runner:latest
+###    # https://hub.docker.com/r/gitlab/gitlab-runner
+###    ports:
+###    environment:
+###      - TZ={{ containerhost__time_zone }}
+###      - LANG=en_US.utf8
+###
+###    volumes:
+###      - '/home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/gitlab-runner/config:/etc/gitlab-runner'
+###    restart: unless-stopped
