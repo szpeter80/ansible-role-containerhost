@@ -26,9 +26,26 @@ services:
         # Add any other gitlab.rb configuration here, each on its own line
         # https://docs.gitlab.com/omnibus/settings/ssl/#configure-a-reverse-proxy-or-load-balancer-ssl-termination
         external_url 'https://{{ ansible_host }}/gitlab'
+        letsencrypt['enable'] = false
+
         nginx['listen_port'] = 8080
         nginx['listen_https'] = false
         gitlab_rails['gitlab_shell_ssh_port'] = 2424
+
+        # Disables Puma clustering, claimed 2-400Mb RAM savings
+        #puma['worker_processes'] = 0
+
+        # Disable Gitlab monitoring - nothing would watch it atm
+        alertmanager['enable'] = false
+        gitlab_exporter['enable'] = false
+        gitlab_kas['enable'] = false
+        node_exporter['enable'] = false
+        postgres_exporter['enable'] = false
+        prometheus_monitoring['enable'] = false
+        prometheus['enable'] = false
+        puma['exporter_enabled'] = false
+        redis_exporter['enable'] = false
+        sidekiq['metrics_enabled'] = false
     volumes:
       - '/home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/gitlab_ce/config:/etc/gitlab'
       - '/home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/gitlab_ce/logs:/var/log/gitlab'
