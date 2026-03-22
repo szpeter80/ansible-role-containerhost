@@ -11,6 +11,7 @@ containerhost__container_allowed_projects:
   - zabbix
   - sonatype_nexus_ce
   - gitlab_ce
+  - jupyterhub
 
 containerhost__system_services:
   - "firewalld"

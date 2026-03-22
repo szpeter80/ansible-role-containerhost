@@ -1,0 +1,17 @@
+---
+### https://docs.docker.com/compose/compose-file/
+
+networks:
+  containerhost:
+    external: true
+
+services:
+
+  jupyterhub:
+    image: FIXME
+    environment:
+      - TZ={{ containerhost__time_zone }}
+      - LANG=en_US.utf8
+
+    restart: unless-stopped
+    volumes:
