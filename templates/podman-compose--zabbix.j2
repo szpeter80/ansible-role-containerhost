@@ -79,7 +79,7 @@ services:
       - TZ={{ containerhost__time_zone }}
       - LANG=en_US.utf8
       - ZBX_HOSTNAME=zabbix-agent
-      - ZBX_ZBX_SERVER_HOST="zabbix-server,10.0.0.0/8,192.168.0.0/16,172.0.0.0/8"
+      - ZBX_SERVER_HOST="zabbix-server"
       - ZBX_DEBUGLEVEL=3
     restart: unless-stopped
     depends_on:
