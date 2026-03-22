@@ -1,8 +1,6 @@
 ---
 ### https://docs.docker.com/compose/compose-file/
 
-# Don't forget to update the volume mount paths to contain the actual user homedir who will run the containers
-
 # USAGE:
 # 1 - create rclone config:     podman exec -ti rclone_rclone_svc_1 /bin/bash -c "rclone config"
 # 2 - when asked "Use web browser to automatically authenticate rclone with remote?" say NO
@@ -41,7 +39,7 @@ services:
       - RCLONE_HEARTBEAT_FN=/data/heartbeat--myproject
     restart: unless-stopped
     volumes:
-      - /home/admin/container-projects/rclone/rclone-config:/config/rclone:z,rw
-      - /home/admin/container-projects/rclone/rclone-data:/data:z,rw
+      - /home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/rclone-config:/config/rclone:z,rw
+      - /home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/rclone-data:/data:z,rw
     entrypoint: /bin/sh
     command: ["-c", "/config/rclone/container-entrypoint.sh"]
