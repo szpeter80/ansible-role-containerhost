@@ -16,6 +16,8 @@ containerhost__container_allowed_projects:
 containerhost__system_services:
   - "firewalld"
 
+containerhost__ip_unprivileged_port_start: '80'
+
 containerhost__packages_install_dnf:
   - bash-completion   # Needed for "podman completion bash"
   - bind-utils        # Debug DNS

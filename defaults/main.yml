@@ -17,3 +17,9 @@ containerhost__container_project_name: dummy
 # To prevent autostart of generated systemd unit for the pod
 # override it to 'stopped'
 containerhost__podman_systemd_unit_initial_state: restarted
+
+# Ports opened on host firewall
+containerhost__firewall_allowed_ports:
+  - "22/tcp"
+  - "80/tcp"
+  - "443/tcp"
