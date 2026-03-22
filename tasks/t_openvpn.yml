@@ -1,0 +1,16 @@
+---
+# configure OpenVPN client on the managed host
+
+# see: https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_reuse_roles.html#roles
+
+
+# dnf install -y NetworkManager-openvpn ?NetworkManager ?NetworkManager-openvpn-gnome ?openvpn 
+# systemctl enable --now NetworkManager
+
+# Put standalone certs to /etc/openvpn/client/
+
+### This command converts the .ovpn settings into a NetworkManager-compatible format and stores it in /etc/NetworkManager/system-connections/.
+# nmcli connection import type openvpn file /path/to/your/config.ovpn
+# nmcli connection modify <connection-name> connection.autoconnect yes
+
+# nmcli connection show --active
