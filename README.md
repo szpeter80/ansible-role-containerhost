@@ -3,16 +3,32 @@ containerhost
 =============
 
 Install and configure a Linux host to run rootless podman containers as systemd unit(s).
-In order for a working setup, you need to install multiple projects, eg `nw_haproxy` + `db_postgresql` + `zabbix`
 
-TODO
-----
+In order for a working setup, you need to install multiple "projects", eg `nw_haproxy` + `db_postgresql` + `zabbix`
 
-- document project dependencies or the absence of them (eg. Gitlab brings its own PostgreSQL, but Zabbix not)
-- check/verify if all the required tasks have the "update" tag
+**Usage**
 
+The pre-requisite setup is described in the "Setup" section below.
 
-Usage
+```bash
+ansible-playbook -e containerhost__container_project_name=nw_haproxy containerhost.yml
+ansible-playbook -e containerhost__container_project_name=db_postgresql containerhost.yml
+ansible-playbook -e containerhost__container_project_name=zabbix containerhost.yml
+```
+
+Valid project names:
+--------------------
+
+- **nw_haproxy**: HAProxy for listening on tcp/80 + tcp/443
+- **db_postgresql**: PostgreSQL database and a container to periodically dump the database
+- **db_mariadb**: MariaDB database, PHPMyadmin and a container to periodically dump the database. Requires: 'nw_haproxy' (for PHPMyadmin)
+- **rclone**: headless container to sync cloud data to local
+- **zabbix**: Zabbix, components: server, web UI, agent2, PDF report maker. Requires: 'nw_haproxy', 'db_postgresql'
+- **gitlab_ce**: Gitlab CE
+- **lampstack**: PHP-FPM + NGINX to run PHP apps
+- **sonatype_nexus_ce**: Sonatype Nexus container registry
+
+Setup
 -----
 
 1. Prepare a linux host ("managed host", RHEL10 or compatible, 2 CPU, 8G RAM, 100G storage with pleanty space on /home)
@@ -88,18 +104,10 @@ Usage
       ansible-playbook -e containerhost__container_project_name=dummy -t update containerhost.yml`
       ```
 
+TODO
+----
 
-Valid project names:
---------------------
-
-- **nw_haproxy**: HAProxy for listening on tcp/80 + tcp/443
-- **db_postgresql**: PostgreSQL database and a container to periodically dump the database
-- **db_mariadb**: MariaDB database, PHPMyadmin and a container to periodically dump the database
-- **gitlab_ce**: Gitlab CE
-- **lampstack**: PHP-FPM + NGINX to run PHP apps
-- **rclone**: headless container to sync cloud data to local
-- **sonatype_nexus_ce**: Sonatype Nexus container registry
-- **zabbix**: Zabbix, all components (except proxy): server, web UI, agent2, PDF report maker
+- check/verify if all the required tasks have the "update" tag
 
 
 License
