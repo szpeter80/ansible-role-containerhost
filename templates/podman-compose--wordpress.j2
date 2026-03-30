@@ -1,0 +1,30 @@
+---
+### https://docs.docker.com/compose/compose-file/
+
+networks:
+  containerhost:
+    external: true
+
+services:
+
+# https://hub.docker.com/_/wordpress#how-to-use-this-image
+# WP will self-update inside the container by default for immediate security patching
+  wordpress:
+    image:  docker.io/library/wordpress:6-apache
+    restart: unless-stopped
+#    ports:
+#      - 8080:80
+    environment:
+      TZ: {{ containerhost__time_zone }}
+      LANG: en_US.utf8
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_HOME', 'https://{{ ansible_host }}/wordpress');
+        define('WP_SITEURL', 'https://{{ ansible_host }}/wordpress');
+      WORDPRESS_DB_HOST: db_mariadb_mariadb_1
+      WORDPRESS_DB_USER: projectdb-user
+      WORDPRESS_DB_PASSWORD: projectdb-password
+      WORDPRESS_DB_NAME: projectdb
+#       defaults to disabled, non-empty value will enable WP_DEBUG in wp-config.php      
+#      - WORDPRESS_DEBUG=1
+    volumes:
+      - /home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/www-data:/var/www/html

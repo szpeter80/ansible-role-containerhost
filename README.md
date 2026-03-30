@@ -6,7 +6,8 @@ Install and configure a Linux host to run rootless podman containers as systemd 
 
 In order for a working setup, you need to install multiple "projects", eg `nw_haproxy` + `db_postgresql` + `zabbix`
 
-**Usage**
+Usage
+-----
 
 The pre-requisite setup is described in the "Setup" section below.
 
@@ -16,8 +17,8 @@ ansible-playbook -e containerhost__container_project_name=db_postgresql containe
 ansible-playbook -e containerhost__container_project_name=zabbix containerhost.yml
 ```
 
-Valid project names:
---------------------
+Valid project names
+-------------------
 
 - **nw_haproxy**: HAProxy for listening on tcp/80 + tcp/443
 - **db_postgresql**: PostgreSQL database and a container to periodically dump the database
@@ -27,6 +28,7 @@ Valid project names:
 - **gitlab_ce**: Gitlab CE
 - **lampstack**: PHP-FPM + NGINX to run PHP apps
 - **sonatype_nexus_ce**: Sonatype Nexus container registry
+- **wordpress (wip: sub-dir + reverse proxy)**: Wordpress in a containter (self updating)
 
 Setup
 -----
@@ -48,15 +50,17 @@ Setup
   This is not your "managed host".
 
     1. Install Ansible, any method is fine. A venv example:  
+
       ```bash
       python -m venv ./venv
       . ./venv/bin/activate
       pip install --upgrade pip
-      pip install ansible
+      pip install ansible ansible-lint
       ansible --version
-      ```   
+      ```
+
     1. create subfolders (this will hold the role)  
-      `mkdir -p ./roles/containerhost` 
+      `mkdir -p ./roles/containerhost`
     1. clone the role from git  
       `git clone https://github.com/szpeter80/ansible-role-containerhost.git ./roles/containerhost/`
 
@@ -64,11 +68,14 @@ Setup
     1. set your `inventory_hostname` to the FQDN of the host
       The role will update the hostname to the value of `inventory_hostname` (unless this function is disabled)
     1. example for INI-style, named `inventory.txt`  
+
       ```ini
       my-host.example.com ansible_user=admin
       ```
+
 1. Create your Ansible configuration
     1. example for `ansible.cfg`  
+
       ```ini
       [defaults]
       nocows=1
@@ -77,7 +84,9 @@ Setup
       roles_path=./roles:/etc/ansible/roles
       interpreter_python=auto_silent
       ```
+
 1. create a playbook (eg `containerhost.yml`)  
+
     ```yaml
     ---
     - name: Install containerhost project
@@ -96,10 +105,13 @@ Setup
 
 1. Run your automation
     1. Override the dummy project on the command line, to deploy project `nw_haproxy`  
+
       ```bash
       ansible-playbook -e containerhost__container_project_name=nw_haproxy containerhost.yml
       ```
+
     1. If you change some parameters, you can save time and skip some parts (eg package installation)
+
       ```bash
       ansible-playbook -e containerhost__container_project_name=dummy -t update containerhost.yml`
       ```

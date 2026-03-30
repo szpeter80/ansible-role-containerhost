@@ -12,6 +12,7 @@ containerhost__container_allowed_projects:
   - sonatype_nexus_ce
   - gitlab_ce
   - jupyterhub
+  - wordpress
 
 containerhost__system_services:
   - "firewalld"
