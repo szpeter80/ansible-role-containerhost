@@ -23,3 +23,10 @@ containerhost__firewall_allowed_ports:
   - "22/tcp"
   - "80/tcp"
   - "443/tcp"
+
+# Is OpenVPN support required on the host ?
+containerhost__openvpn_connection_enabled: false
+
+# Profile to import, you are expected to put
+# a file with this name + .ovpn extension to Ansible project directory
+containerhost__openvpn_connection_profile_fn: "vpn-connection"

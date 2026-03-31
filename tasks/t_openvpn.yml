@@ -1,16 +1,56 @@
 ---
 # configure OpenVPN client on the managed host
 
-# see: https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_reuse_roles.html#roles
-
-
-# dnf install -y NetworkManager-openvpn ?NetworkManager ?NetworkManager-openvpn-gnome ?openvpn 
-# systemctl enable --now NetworkManager
+# see:
+# https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_reuse_roles.html#roles
+# https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_reuse.html#reusing-files-and-roles
 
 # Put standalone certs to /etc/openvpn/client/
-
-### This command converts the .ovpn settings into a NetworkManager-compatible format and stores it in /etc/NetworkManager/system-connections/.
-# nmcli connection import type openvpn file /path/to/your/config.ovpn
-# nmcli connection modify <connection-name> connection.autoconnect yes
-
 # nmcli connection show --active
+
+- name: Install packages for OpenVPN
+  become: true
+  ansible.builtin.dnf:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - NetworkManager-openvpn
+
+- name: Copy VPN profile to managed host
+  ansible.builtin.copy:
+    src: "{{ containerhost__openvpn_connection_profile }}.ovpn"
+    dest: "/home/{{ ansible_user }}/"
+    mode: "0600"
+
+- name: Check whether OpenVPN connection is already imported
+  ansible.builtin.command: "nmcli connection show {{ containerhost__openvpn_connection_profile }}"
+  register: containerhost__openvpn_connection_status
+  changed_when: false
+  failed_when: false
+
+- name: Import OpenVPN connection
+  become: true
+  ansible.builtin.command: "nmcli connection import type openvpn file /home/{{ ansible_user }}/{{ containerhost__openvpn_connection_profile }}.ovpn"
+  when: containerhost__openvpn_connection_status.rc != 0
+
+- name: Read OpenVPN auto-connect setting
+  ansible.builtin.command: "nmcli -g connection.autoconnect connection show {{ containerhost__openvpn_connection_profile }}"
+  register: containerhost__openvpn_autoconnect_status
+  changed_when: false
+
+- name: Set profile to auto-connect
+  become: true
+  ansible.builtin.command: "nmcli connection modify {{ containerhost__openvpn_connection_profile }} connection.autoconnect yes"
+  when: containerhost__openvpn_autoconnect_status.stdout | trim != 'yes'
+
+- name: Check whether OpenVPN connection is active
+  ansible.builtin.command: "nmcli -t -f NAME connection show --active"
+  register: containerhost__openvpn_active_connections
+  changed_when: false
+
+- name: Activate OpenVPN connection
+  become: true
+  ansible.builtin.command: "nmcli connection up {{ containerhost__openvpn_connection_profile }}"
+  when: >
+    containerhost__openvpn_connection_profile not in
+    containerhost__openvpn_active_connections.stdout_lines

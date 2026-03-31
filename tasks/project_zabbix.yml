@@ -6,8 +6,14 @@
 
 - name: "Install official Zabbix repo for RHEL"
   become: true
+  vars:
+    zabbix_repo_rpm_url: >-
+      https://repo.zabbix.com/zabbix/{{ containerhost__zabbix__zabbix_version }}
+      /release/rhel/{{ containerhost__zabbix__rhel_version }}
+      /noarch/zabbix-release-latest-{{ containerhost__zabbix__zabbix_version }}
+      .el{{ containerhost__zabbix__rhel_version }}.noarch.rpm
   ansible.builtin.dnf:
-    name: "https://repo.zabbix.com/zabbix/{{ containerhost__zabbix__zabbix_version }}/release/rhel/{{ containerhost__zabbix__rhel_version }}/noarch/zabbix-release-latest-{{ containerhost__zabbix__zabbix_version }}.el{{ containerhost__zabbix__rhel_version }}.noarch.rpm"
+    name: "{{ zabbix_repo_rpm_url }}"
     state: present
     disable_gpg_check: true
   when: containerhost__zabbix__install_agent_to_managed_host
@@ -19,4 +25,3 @@
     state: present
     update_cache: true
   when: containerhost__zabbix__install_agent_to_managed_host
-

@@ -125,6 +125,10 @@
     state: restarted
   with_items: "{{ containerhost__system_services }}"
 
+- name: Enable OpenVPN connection
+  ansible.builtin.import_tasks: t_openvpn.yml
+  when: containerhost__openvpn_connection_enabled
+
 ###############################################################################
 ### Project specific tasks
 ###############################################################################
