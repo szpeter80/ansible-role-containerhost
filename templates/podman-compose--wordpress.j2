@@ -12,6 +12,8 @@ services:
   wordpress:
     image:  docker.io/library/wordpress:6-apache
     restart: unless-stopped
+    networks:
+      - containerhost
 #    ports:
 #      - 8080:80
     environment:
