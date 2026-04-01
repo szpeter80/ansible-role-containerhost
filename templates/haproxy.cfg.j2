@@ -28,7 +28,7 @@ frontend stats
 
 frontend containers-fe-8080
   bind *:8080
-  http-request redirect   code 301   prefix https://{{ ansible_host }}/
+  http-request redirect   code 301   prefix https://{{ ansible_host }}
 
 
 frontend containers-fe-8443

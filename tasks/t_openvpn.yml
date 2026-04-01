@@ -15,6 +15,7 @@
     state: present
   loop:
     - NetworkManager-openvpn
+    - traceroute
 
 - name: Copy VPN profile to managed host
   ansible.builtin.copy:
@@ -33,7 +34,12 @@
   ansible.builtin.command: "nmcli connection import type openvpn file /home/{{ ansible_user }}/{{ containerhost__openvpn_connection_profile }}.ovpn"
   when: containerhost__openvpn_connection_status.rc != 0
 
-- name: Read OpenVPN auto-connect setting
+- name: Set IPv4 default route to off by default
+  become: true
+  ansible.builtin.command: "nmcli connection modify {{ containerhost__openvpn_connection_profile }} ipv4.never-default true  ipv6.never-default true"
+  when: containerhost__openvpn_connection_status.rc != 0
+
+- name: Read OpenVPN auto-connect value
   ansible.builtin.command: "nmcli -g connection.autoconnect connection show {{ containerhost__openvpn_connection_profile }}"
   register: containerhost__openvpn_autoconnect_status
   changed_when: false
