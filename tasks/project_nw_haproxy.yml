@@ -1,5 +1,5 @@
 ###############################################################################
-### Project: Classic LAMP stack
+### Project: HAProxy load balancer in a container
 ###############################################################################
 
 ---
@@ -7,5 +7,15 @@
 - name: Create dummy self-signed certificates
   ansible.builtin.command:
     chdir: "/home/{{ ansible_user }}/container-projects/{{ containerhost__container_project_name }}"
-    cmd: "./gen-snakeoil-cert.sh"
-    creates: "/home/{{ ansible_user }}/container-projects/{{ containerhost__container_project_name }}/certs/snakeoil.pem"
+    cmd: "./gen-cert.sh"
+    creates: "/home/{{ ansible_user }}/container-projects/{{ containerhost__container_project_name }}/certs/{{ ansible_hostname }}.pem"
+
+- name: Copy haproxy.cfg to container
+  ansible.builtin.template:
+    src: "haproxy.cfg.j2"
+    dest: "/home/{{ ansible_user }}/container-projects/{{ containerhost__container_project_name }}/haproxy.cfg"
+    mode: "0644"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    force: true
+    backup: true
