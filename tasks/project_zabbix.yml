@@ -8,10 +8,12 @@
   become: true
   vars:
     zabbix_repo_rpm_url: >-
-      https://repo.zabbix.com/zabbix/{{ containerhost__zabbix__zabbix_version }}
-      /release/rhel/{{ containerhost__zabbix__rhel_version }}
-      /noarch/zabbix-release-latest-{{ containerhost__zabbix__zabbix_version }}
-      .el{{ containerhost__zabbix__rhel_version }}.noarch.rpm
+      {{
+      'https://repo.zabbix.com/zabbix/' ~ containerhost__zabbix__zabbix_version 
+      ~ '/release/rhel/' ~ containerhost__zabbix__rhel_version 
+      ~ '/noarch/zabbix-release-latest-' ~ containerhost__zabbix__zabbix_version
+      ~ '.el' ~ containerhost__zabbix__rhel_version ~ '.noarch.rpm'
+      }}
   ansible.builtin.dnf:
     name: "{{ zabbix_repo_rpm_url }}"
     state: present
