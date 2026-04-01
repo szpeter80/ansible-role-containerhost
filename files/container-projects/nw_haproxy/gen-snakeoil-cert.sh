@@ -1,8 +1,5 @@
 #!/bin/bash
 
-C_HOST_NAME="snakeoil.example.com"
-C_HOST_ADDRESS="192.168.1.1"
-
 # shellcheck disable=SC1091
 . ../environment.env
 
