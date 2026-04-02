@@ -26,6 +26,9 @@ frontend stats
 
 #### Frontend config
 
+userlist admins
+  user admin insecure-password {{ lookup('ansible.builtin.password', '/dev/null', length=10, seed=ansible_host) }}
+
 frontend containers-fe-8080
   bind *:8080
   http-request redirect   code 301   prefix https://{{ ansible_host }}
@@ -35,6 +38,12 @@ frontend containers-fe-8443
   # Strict SNI has a side effect: startup is possible with empty dir, also no default cert
   # https://www.haproxy.com/documentation/haproxy-configuration-manual/latest/#5.1-strict-sni
   bind *:8443 ssl crt /etc/ssl/certs strict-sni
+
+{% if containerhost__haproxy_auth_enabled | bool %}
+  http-request auth unless { http_auth(admins) }
+{% endif %}
+
+
   http-request redirect scheme https code 301 unless { ssl_fc }
   http-request del-header X-Forwarded-For
 

@@ -17,6 +17,9 @@ containerhost__firewall_allowed_ports:
   - "80/tcp"
   - "443/tcp"
 
+# Enable HAProxy HTTP authentication
+containerhost__haproxy_auth_enabled: false
+
 # Enable automatic package updates
 containerhost__automatic_package_updates_enabled: true
 
