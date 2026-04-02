@@ -1,5 +1,5 @@
 ---
 containerhost__zabbix__install_agent_to_managed_host: true
-containerhost__zabbix__zabbix_version: "8.0"
-containerhost__zabbix__imagetag: "alpine-trunk"
+containerhost__zabbix__zabbix_version: "7.4"
+containerhost__zabbix__imagetag: "alpine-7.4-latest"
 containerhost__zabbix__rhel_version: "10"

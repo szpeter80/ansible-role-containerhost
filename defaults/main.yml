@@ -11,18 +11,21 @@ containerhost__enforce_inventory_hostname: true
 # Install fail2ban to protect SSH
 containerhost__enable_fail2ban: true
 
-# This specifies which container project to use
-containerhost__container_project_name: dummy
-
-# To prevent autostart of generated systemd unit for the pod
-# override it to 'stopped'
-containerhost__podman_systemd_unit_initial_state: restarted
-
 # Ports opened on host firewall
 containerhost__firewall_allowed_ports:
   - "22/tcp"
   - "80/tcp"
   - "443/tcp"
+
+# Enable automatic package updates
+containerhost__automatic_package_updates_enabled: true
+
+# This specifies which container project to use - you are expected to override
+containerhost__container_project_name: dummy
+
+# To prevent autostart of generated systemd unit for the pod
+# override it to 'stopped'
+containerhost__podman_systemd_unit_initial_state: restarted
 
 # Is OpenVPN support required on the host ?
 containerhost__openvpn_connection_enabled: false

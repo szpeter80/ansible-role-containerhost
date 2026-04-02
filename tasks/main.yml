@@ -100,6 +100,10 @@
     name: "{{ containerhost__packages_install_dnf }}"
     state: present
 
+- name: Enable automatic package updates
+  ansible.builtin.import_tasks: t_auto_pkg_update_dnf.yml
+  when: containerhost__automatic_package_updates_enabled
+
 - name: Ensure podman completion line is in .bashrc
   become: false
   ansible.builtin.lineinfile:

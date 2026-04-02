@@ -1,0 +1,23 @@
+---
+# configure automatic package updates (dnf)
+
+- name: Install package dnf-automatic
+  become: true
+  ansible.builtin.dnf:
+    name: dnf-automatic
+    state: present
+
+- name: Set config for dnf-automatic
+  become:  true
+  ansible.builtin.copy:
+    src: dnf_automatic.conf
+    dest: /etc/dnf/automatic.conf
+    force: true
+    backup: true
+
+- name: Enable a timer unit for dnf-automatic
+  become: true
+  ansible.builtin.systemd_service:
+    name: dnf-automatic.timer
+    state: started
+    enabled: true
