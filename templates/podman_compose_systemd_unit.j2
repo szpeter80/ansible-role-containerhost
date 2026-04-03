@@ -15,6 +15,8 @@ Environment="COMPOSE_PATH_SEPARATOR=:"
 Environment="COMPOSE_PROJECT_NAME={{ containerhost__container_project_name }}"
 Environment="COMPOSE_PROJECT_DIR=/home/{{ ansible_user }}/container-projects/{{ containerhost__container_project_name }}"
 
+WorkingDirectory=/home/{{ ansible_user }}/container-projects/{{ containerhost__container_project_name }}
+ExecStartPre=-/home/{{ ansible_user }}/container-projects/{{ containerhost__container_project_name }}/pre-start.sh
 
 ExecStartPre=-/usr/bin/podman-compose --in-pod true up --no-start
 ExecStartPre=/usr/bin/podman pod start pod_{{ containerhost__container_project_name }}

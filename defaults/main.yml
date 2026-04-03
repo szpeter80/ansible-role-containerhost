@@ -20,6 +20,10 @@ containerhost__firewall_allowed_ports:
 # Enable HAProxy HTTP authentication
 containerhost__haproxy_auth_enabled: false
 
+# Enable LetsEncrypt with tcp/80 HTTP
+containerhost__certbot_enabled: false
+containerhost__certbot_email: 'admin@example.com'
+
 # Enable automatic package updates
 containerhost__automatic_package_updates_enabled: true
 

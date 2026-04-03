@@ -2,7 +2,7 @@
 global
   daemon
   maxconn 5000
-  log stdout  format raw  local0  warning
+  log stdout  format raw  local0  info
 
 resolvers container-dns
   accepted_payload_size 8192
@@ -14,7 +14,6 @@ defaults
   timeout client  5000ms
   timeout server 60000ms
   option forwardfor
-
 
 frontend stats
   mode http
@@ -31,8 +30,14 @@ userlist admins
 
 frontend containers-fe-8080
   bind *:8080
-  http-request redirect   code 301   prefix https://{{ ansible_host }}
+  http-request del-header X-Forwarded-For
 
+{% if containerhost__certbot_enabled | bool %}
+#  use_backend be-certbot       if { path_beg /.well-known }
+  default_backend be-certbot
+{% else %}
+  http-request redirect   code 301   prefix https://{{ ansible_host }}
+{% endif %}
 
 frontend containers-fe-8443
   # Strict SNI has a side effect: startup is possible with empty dir, also no default cert
@@ -70,6 +75,12 @@ frontend containers-fe-8443
   use_backend be-wordpress    if { path_beg /wordpress/ }
 
 #### Backend config
+
+backend be-certbot
+  server certbot-1 nw_haproxy_certbot_1:80  resolvers container-dns  init-addr none
+  http-request add-header X-Forwarded-Proto https if { ssl_fc }
+  http-request set-header X-Forwarded-Port %[dst_port]
+
 
 backend be-db_mariadb_pma
   server phpmyadmin-1 db_mariadb_pma_1:80  check  resolvers container-dns  init-addr none

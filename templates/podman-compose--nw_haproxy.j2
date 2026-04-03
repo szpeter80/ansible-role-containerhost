@@ -13,12 +13,17 @@ services:
     image: docker.io/library/haproxy:3.3-alpine
     networks:
       - containerhost
+# container port -> host port
+# there is a port forward on the host for tcp/80,443 -> 8080/80443
+# side effect: haproxy bind port != port the external client connects
+# this has to be reflected when sending info to backends
     ports:
       - 80:8080
       - 443:8443
       - 8081:8081
-    cap_add:
-      - CAP_NET_ADMIN
+# as long as not binding to low ports, this is not required
+#    cap_add:
+#      - CAP_NET_ADMIN
 #      - CAP_NET_BIND_SERVICE
     environment:
       - TZ={{ containerhost__time_zone }}
@@ -27,3 +32,23 @@ services:
     volumes:
       - /home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/certs:/etc/ssl/certs:z,ro
       - /home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:z,ro
+
+{% if containerhost__certbot_enabled | bool %}
+  certbot:
+    image: docker.io/certbot/certbot:amd64-latest
+    networks:
+      - containerhost
+    environment:
+      - TZ={{ containerhost__time_zone }}
+      - LANG=en_US.utf8
+      - CERTBOT_DOMAIN={{ ansible_host }}
+      - CERTBOT_EMAIL={{ containerhost__certbot_email }} 
+    entrypoint: /bin/sh
+    command: ["-c", "/container-entrypoint.sh"]
+    restart: unless-stopped
+    volumes:
+      - /home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/certbot/container-entrypoint.sh:/container-entrypoint.sh:z,ro
+      - /home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/certbot/certs:/etc/letsencrypt:z,rw
+    depends_on:
+      - haproxy
+{% endif %}
