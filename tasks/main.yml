@@ -114,6 +114,17 @@
     group: "{{ ansible_user }}"
     mode: '0644'
 
+- name: Enble timestamped eternal bash history for all users
+  become: true
+  ansible.builtin.copy:
+    src: "99-eternal-bash-history.sh"
+    dest: "/etc/profile.d/99-eternal-bash-history.sh"
+    owner: root
+    group: root
+    mode: '0644'
+    force: true
+    backup: true
+
 - name: Create container-projects directory in user home
   become: false
   ansible.builtin.file:
