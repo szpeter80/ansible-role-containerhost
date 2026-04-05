@@ -8,10 +8,13 @@
     state: present
 
 - name: Set config for dnf-automatic
-  become:  true
+  become: true
   ansible.builtin.copy:
     src: dnf_automatic.conf
     dest: /etc/dnf/automatic.conf
+    owner: root
+    group: root
+    mode: '0644'
     force: true
     backup: true
 

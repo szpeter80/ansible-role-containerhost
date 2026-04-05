@@ -33,11 +33,16 @@
   become: true
   ansible.builtin.command: "nmcli connection import type openvpn file /home/{{ ansible_user }}/{{ containerhost__openvpn_connection_profile }}.ovpn"
   when: containerhost__openvpn_connection_status.rc != 0
+  register: containerhost__result
+  changed_when: containerhost__result.rc == 0
 
-- name: Set IPv4 default route to off by default
+
+- name: Set tunnel to split mode (no default route should point to the VPN)
   become: true
   ansible.builtin.command: "nmcli connection modify {{ containerhost__openvpn_connection_profile }} ipv4.never-default true  ipv6.never-default true"
   when: containerhost__openvpn_connection_status.rc != 0
+  register: containerhost__result
+  changed_when: containerhost__result.rc == 0
 
 - name: Read OpenVPN auto-connect value
   ansible.builtin.command: "nmcli -g connection.autoconnect connection show {{ containerhost__openvpn_connection_profile }}"
@@ -48,6 +53,20 @@
   become: true
   ansible.builtin.command: "nmcli connection modify {{ containerhost__openvpn_connection_profile }} connection.autoconnect yes"
   when: containerhost__openvpn_autoconnect_status.stdout | trim != 'yes'
+  register: containerhost__result
+  changed_when: containerhost__result.rc == 0
+
+- name: Read if any profile is bounded to (depends on) the default interface
+  ansible.builtin.command: "nmcli -g connection.secondaries connection show {{ ansible_default_ipv4.interface }}"
+  register: containerhost__main_eth_bind_status
+  changed_when: false
+
+- name: Bind VPN profile to the default physical interface for autostart trigger
+  become: true
+  ansible.builtin.command: "nmcli con modify {{ ansible_default_ipv4.interface }} +connection.secondaries {{ containerhost__openvpn_connection_profile }}"
+  when: containerhost__main_eth_bind_status.stdout | default('', true) | trim == ''
+  register: containerhost__result
+  changed_when: containerhost__result.rc == 0
 
 - name: Check whether OpenVPN connection is active
   ansible.builtin.command: "nmcli -t -f NAME connection show --active"
@@ -60,3 +79,5 @@
   when: >
     containerhost__openvpn_connection_profile not in
     containerhost__openvpn_active_connections.stdout_lines
+  register: containerhost__result
+  changed_when: containerhost__result.rc == 0
