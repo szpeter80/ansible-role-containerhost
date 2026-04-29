@@ -9,8 +9,6 @@ In order for a working setup, you need to install multiple "projects", eg `nw_ha
 TODO
 ----
 
-- Implement correct Gitlab post-install config  
-  <https://gitlab.com/gitlab-org/omnibus-gitlab/-/work_items/2837#note_703706180>
 - check/verify if all the required tasks have the "update" tag
 
 Usage
