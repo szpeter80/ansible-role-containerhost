@@ -10,8 +10,8 @@ services:
 # https://docs.gitlab.com/install/docker/installation/#install-gitlab-by-using-docker-compose
   gitlab-ce:
 #   https://hub.docker.com/r/gitlab/gitlab-ce
-    image: docker.io/gitlab/gitlab-ce:18.9.2-ce.0
-    hostname: 'gitlab.example.com'
+    image: docker.io/gitlab/gitlab-ce:18.11.2-ce.0
+    hostname: '{{ ansible_host }}'
     shm_size: '256m'
     networks:
       - containerhost
