@@ -9,6 +9,7 @@ In order for a working setup, you need to install multiple "projects", eg `nw_ha
 TODO
 ----
 
+- add runner automatically to gitlab_ce
 - check/verify if all the required tasks have the "update" tag
 
 Usage

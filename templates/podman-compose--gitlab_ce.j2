@@ -26,6 +26,10 @@ services:
         # Add any other gitlab.rb configuration here, each on its own line
         # https://docs.gitlab.com/omnibus/settings/ssl/#configure-a-reverse-proxy-or-load-balancer-ssl-termination
         external_url 'https://{{ ansible_host }}/gitlab'
+
+        # Force the relative URL at the Rails level
+        gitlab_rails['relative_url_root'] = "/gitlab"
+
         letsencrypt['enable'] = false
 
         # Disable public user registration
@@ -45,10 +49,15 @@ services:
         nginx['listen_https'] = false
         gitlab_rails['gitlab_shell_ssh_port'] = 2424
 
+        
+        gitlab_rails['trusted_proxies'] = ['0.0.0.0/0', '10.0.0.0/8']
+        #gitlab_rails['monitoring_whitelist'] = ['0.0.0.0/0', '10.0.0.0/8', '127.0.0.0/8']
+        #gitlab_workhorse['relative_url_root'] = "/gitlab"
+
         # Disables Puma clustering, claimed 2-400Mb RAM savings
         #puma['worker_processes'] = 0
 
-        # Disable Gitlab monitoring - nothing would watch it atm
+        # Disable services to save resources
         alertmanager['enable'] = false
         gitlab_exporter['enable'] = false
         gitlab_kas['enable'] = false
@@ -73,14 +82,13 @@ services:
 # This works fine with Podman installed locally if your scripts call podman manually.
 # https://docs.gitlab.com/runner/install/docker/
 # FIXME: https://gitlab.com/gitlab-org/gitlab-runner/-/work_items/1285
-###  gitlab-runner:
-###    image: docker.io/gitlab/gitlab-runner:latest
-###    # https://hub.docker.com/r/gitlab/gitlab-runner
-###    ports:
-###    environment:
-###      - TZ={{ containerhost__time_zone }}
-###      - LANG=en_US.utf8
-###
-###    volumes:
-###      - '/home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/gitlab-runner/config:/etc/gitlab-runner'
-###    restart: unless-stopped
+
+  gitlab-runner:
+    image: docker.io/gitlab/gitlab-runner:latest
+    # https://hub.docker.com/r/gitlab/gitlab-runner
+    environment:
+      - TZ={{ containerhost__time_zone }}
+      - LANG=en_US.utf8
+    volumes:
+      - '/home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/gitlab-runner/config:/etc/gitlab-runner:z,rw'
+    restart: unless-stopped
