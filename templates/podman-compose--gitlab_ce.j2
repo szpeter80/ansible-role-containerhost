@@ -59,10 +59,11 @@ services:
         puma['exporter_enabled'] = false
         redis_exporter['enable'] = false
         sidekiq['metrics_enabled'] = false
+      GITLAB_POST_RECONFIGURE_SCRIPT: /etc/gitlab/post-reconfigure.sh
     volumes:
-      - '/home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/gitlab_ce/config:/etc/gitlab'
-      - '/home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/gitlab_ce/logs:/var/log/gitlab'
-      - '/home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/gitlab_ce/data:/var/opt/gitlab'
+      - '/home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/gitlab-server/config:/etc/gitlab:z,rw'
+      - '/home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/gitlab-server/logs:/var/log/gitlab:z,rw'
+      - '/home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/gitlab-server/data:/var/opt/gitlab:z,rw'
     restart: unless-stopped
 
 # If you use the shell executor. Then no container socket is required.
