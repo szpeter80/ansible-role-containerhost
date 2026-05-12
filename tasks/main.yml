@@ -246,3 +246,17 @@
     name: "podman-compose--{{ containerhost__container_project_name }}"
     enabled: true
     state: "{{ containerhost__podman_systemd_unit_initial_state }}"
+
+- name: Check if project specific post-start task file exists
+  delegate_to: localhost
+  ansible.builtin.stat:
+    path: "{{ role_path }}/tasks/project_{{ containerhost__container_project_name }}_post_start.yml"
+  register: containerhost__project_post_start_task_file
+  tags:
+    - post_run
+
+- name: Run project specific tasks after the pod is started
+  ansible.builtin.include_tasks: "project_{{ containerhost__container_project_name }}_post_start.yml"
+  when: containerhost__project_post_start_task_file.stat.exists | bool
+  tags:
+    - post_run

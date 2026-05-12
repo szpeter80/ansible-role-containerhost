@@ -50,9 +50,8 @@ services:
         gitlab_rails['gitlab_shell_ssh_port'] = 2424
 
         
-        gitlab_rails['trusted_proxies'] = ['0.0.0.0/0', '10.0.0.0/8']
-        #gitlab_rails['monitoring_whitelist'] = ['0.0.0.0/0', '10.0.0.0/8', '127.0.0.0/8']
-        #gitlab_workhorse['relative_url_root'] = "/gitlab"
+        gitlab_rails['trusted_proxies'] = ['0.0.0.0/0']
+        gitlab_rails['monitoring_whitelist'] = ['0.0.0.0/0']
 
         # Disables Puma clustering, claimed 2-400Mb RAM savings
         #puma['worker_processes'] = 0
@@ -84,8 +83,10 @@ services:
 # FIXME: https://gitlab.com/gitlab-org/gitlab-runner/-/work_items/1285
 
   gitlab-runner:
-    image: docker.io/gitlab/gitlab-runner:latest
     # https://hub.docker.com/r/gitlab/gitlab-runner
+    image: docker.io/gitlab/gitlab-runner:latest
+    networks:
+      - containerhost
     environment:
       - TZ={{ containerhost__time_zone }}
       - LANG=en_US.utf8
