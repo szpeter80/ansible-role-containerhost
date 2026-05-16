@@ -13,6 +13,7 @@ services:
     image: docker.io/gitlab/gitlab-ce:18.11.3-ce.0
     hostname: '{{ ansible_host }}'
     shm_size: '256m'
+    stop_grace_period: "{{ containerhost__container_project_timeout }}s"
     networks:
       - containerhost
     ports:

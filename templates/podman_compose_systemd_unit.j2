@@ -22,7 +22,7 @@ ExecStartPre=-/usr/bin/podman-compose --in-pod true up --no-start
 ExecStartPre=/usr/bin/podman pod start pod_{{ containerhost__container_project_name }}
 ExecStart=/usr/bin/podman-compose wait
 
-ExecStop=/usr/bin/podman pod stop pod_{{ containerhost__container_project_name }}
+ExecStop=/usr/bin/podman pod stop --time {{ containerhost__container_project_timeout }} pod_{{ containerhost__container_project_name }}
 
 [Install]
 WantedBy=default.target

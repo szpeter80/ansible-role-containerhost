@@ -30,6 +30,10 @@ containerhost__automatic_package_updates_enabled: true
 # This specifies which container project to use - you are expected to override
 containerhost__container_project_name: dummy
 
+# Timeout in seconds to podman pod stop --time zzzz
+# It seems "podman pod ...." commands does to honor 
+containerhost__container_project_timeout: 60
+
 # To prevent autostart of generated systemd unit for the pod
 # override it to 'stopped'
 containerhost__podman_systemd_unit_initial_state: restarted
