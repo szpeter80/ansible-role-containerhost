@@ -45,6 +45,9 @@
   ansible.builtin.dnf:
     name: epel-release
     state: present
+  when:
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution != 'Fedora'
 
 - name: "Configure fail2ban"
   when: containerhost__enable_fail2ban | bool

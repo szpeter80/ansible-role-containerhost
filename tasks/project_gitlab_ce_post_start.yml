@@ -4,6 +4,17 @@
 
 ---
 
+- name: Wait for GitLab CE to be healthy
+  ansible.builtin.uri:
+    url: "https://{{ ansible_host }}/gitlab/-/health"
+    validate_certs: false
+  register: result
+  until: result.status == 200
+  retries: 300
+  delay: 5
+  tags:
+    - post_run
+
 - name: Check if Gitlab Runner already has config
   ansible.builtin.stat:
     path: "/home/{{ ansible_user }}/container-projects/{{ containerhost__container_project_name }}/gitlab-runner/config/config.toml"
@@ -16,18 +27,6 @@
   tags:
     - post_run
   block:
-
-    - name: Wait for GitLab CE to be healthy
-      ansible.builtin.uri:
-        url: "https://{{ ansible_host }}/gitlab/-/health"
-        validate_certs: false
-      register: result
-      until: result.status == 200
-      retries: 300
-      delay: 5
-      tags:
-        - post_run
-
     - name: Create or Update Admin API Token
       ansible.builtin.shell:
         cmd: >
@@ -89,3 +88,17 @@
         creates: "/home/{{ ansible_user }}/container-projects/{{ containerhost__container_project_name }}/gitlab-runner/config/config.toml"
       tags:
         - post_run
+
+- name: Get initial root password
+  ansible.builtin.shell:
+    cmd: >
+      podman exec gitlab_ce_gitlab-ce_1 cat /etc/gitlab/initial_root_password
+  register: containerhost__gitlab_initial_root_password
+  tags:
+    - post_run
+
+- name: Show initial root password
+  ansible.builtin.debug:
+    var: containerhost__gitlab_initial_root_password
+  tags:
+    - post_run

@@ -10,7 +10,7 @@ services:
 # https://docs.gitlab.com/install/docker/installation/#install-gitlab-by-using-docker-compose
   gitlab-ce:
 #   https://hub.docker.com/r/gitlab/gitlab-ce
-    image: docker.io/gitlab/gitlab-ce:18.11.2-ce.0
+    image: docker.io/gitlab/gitlab-ce:18.11.3-ce.0
     hostname: '{{ ansible_host }}'
     shm_size: '256m'
     networks:
@@ -31,9 +31,6 @@ services:
         gitlab_rails['relative_url_root'] = "/gitlab"
 
         letsencrypt['enable'] = false
-
-        # Disable public user registration
-        gitlab_rails['gitlab_signup_enabled'] = false
 
         # Initial root password: cat /etc/gitlab/initial_root_password
         # Relax pw check in test environment
