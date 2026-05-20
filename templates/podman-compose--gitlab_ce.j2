@@ -45,6 +45,7 @@ services:
 
         nginx['listen_port'] = 9999
         nginx['listen_https'] = false
+        # This is the advertised port on the web ui, the internal sshd listens on tcp/22
         gitlab_rails['gitlab_shell_ssh_port'] = 2424
 
         

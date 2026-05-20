@@ -16,6 +16,8 @@ containerhost__firewall_allowed_ports:
   - "22/tcp"
   - "80/tcp"
   - "443/tcp"
+  # Gitlab CE SSH
+  - "2424/tcp"
 
 # Enable HAProxy HTTP authentication
 containerhost__haproxy_auth_enabled: false

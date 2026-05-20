@@ -39,6 +39,13 @@ frontend containers-fe-8080
   http-request redirect   code 301   prefix https://{{ ansible_host }}
 {% endif %}
 
+{% if containerhost__containerhost__container_project_name == "gitlab_ce" %}
+listen gitlab-ssh-2424
+  mode tcp
+  bind *:2424
+  server gitlab_ce-1 gitlab_ce_gitlab-ce_1:22  check  resolvers container-dns  init-addr none
+{% endif %}
+
 frontend containers-fe-8443
   # Strict SNI has a side effect: startup is possible with empty dir, also no default cert
   # https://www.haproxy.com/documentation/haproxy-configuration-manual/latest/#5.1-strict-sni

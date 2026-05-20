@@ -9,7 +9,8 @@ In order for a working setup, you need to install multiple "projects", eg `nw_ha
 TODO
 ----
 
-- add runner automatically to gitlab_ce
+- make conditional sections instead of current all-in in haproxy.cfg
+- add per-webdir to config vars and make haproxy config use it instead of static "myapp"
 - check/verify if all the required tasks have the "update" tag
 
 Usage
