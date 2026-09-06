@@ -117,7 +117,7 @@
     group: "{{ ansible_user }}"
     mode: '0644'
 
-- name: Enble timestamped eternal bash history for all users
+- name: Enable timestamped eternal bash history for all users
   become: true
   ansible.builtin.copy:
     src: "99-eternal-bash-history.sh"
@@ -147,6 +147,10 @@
   ansible.builtin.import_tasks: t_openvpn.yml
   when: containerhost__openvpn_connection_enabled
 
+- name: Install Zabbix Agent 2 on the managed host
+  ansible.builtin.import_tasks: t_install_zabbix_agent.yml
+  when: containerhost__install_zabbix_agent_to_managed_host
+  
 ###############################################################################
 ### Project specific tasks
 ###############################################################################
