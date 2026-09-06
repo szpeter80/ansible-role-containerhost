@@ -1,0 +1,4 @@
+---
+containerhost__zabbix__zabbix_version: "7.4"
+containerhost__zabbix__imagetag: "alpine-7.4-latest"
+containerhost__zabbix__rhel_version: "10"

@@ -1,0 +1,42 @@
+---
+### https://docs.docker.com/compose/compose-file/
+
+networks:
+  containerhost:
+    external: true
+
+services:
+
+  zabbix-proxy:
+#   https://hub.docker.com/r/zabbix/zabbix-proxy-sqlite3
+    image: docker.io/zabbix/zabbix-proxy-sqlite3:{{ containerhost__zabbix__imagetag }}
+    networks:
+      - containerhost
+    ports:
+      - 10051:10051
+    environment:
+      - TZ={{ containerhost__time_zone }}
+      - LANG=en_US.utf8
+# By default, value is 0 - active proxy (proxy actively connects to server)
+# Allowed values are 0 - active proxy and 1 - passive proxy.
+      - ZBX_PROXYMODE=0
+      - ZBX_SERVER_HOST=zabbix.example.com:10051
+      - ZBX_DEBUGLEVEL=3
+    restart: unless-stopped
+    volumes:
+      - /home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/zabbix-server/ssh-keys:/var/lib/zabbix/ssh_keys:z,ro
+
+
+  zabbix-agent:
+    image: docker.io/zabbix/zabbix-agent2:{{ containerhost__zabbix__imagetag }}
+    networks:
+      - containerhost
+    environment:
+      - TZ={{ containerhost__time_zone }}
+      - LANG=en_US.utf8
+      - ZBX_HOSTNAME=zabbix-agent
+      - ZBX_SERVER_HOST=zabbix-server
+      - ZBX_DEBUGLEVEL=3
+    restart: unless-stopped
+    depends_on:
+      - zabbix-proxy

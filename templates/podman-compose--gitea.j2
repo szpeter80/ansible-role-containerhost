@@ -1,0 +1,25 @@
+---
+### https://docs.docker.com/compose/compose-file/
+
+networks:
+  containerhost:
+    external: true
+
+services:
+
+# https://docs.gitea.com/installation/install-with-docker-rootless/
+  gitea:
+    image: docker.gitea.com/gitea:1.27-rootless
+    networks:
+      - containerhost
+    ports:
+      - "3000:3000"
+      - "3022:2222"
+    environment:
+      - TZ={{ containerhost__time_zone }}
+      - LANG=en_US.utf8
+    restart: unless-stopped
+    volumes:
+#      Adding "U" to the mount makes the owner the container default user
+      - /home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/gitea-config:/etc/gitea:U,z,rw
+      - /home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/gitea-data:/var/lib/gitea:U,z,rw

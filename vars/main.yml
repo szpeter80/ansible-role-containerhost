@@ -4,15 +4,20 @@
 
 containerhost__container_allowed_projects:
   - nw_haproxy
+
   - db_postgresql
   - db_mariadb
-  - lampstack
-  - rclone
-  - zabbix
-  - sonatype_nexus_ce
+
   - gitlab_ce
   - jupyterhub
+  - lampstack
+  - rclone
+  - sonatype_nexus_ce
+  - squid
+  - step_ca
   - wordpress
+  - zabbix
+  - zabbix-proxy
 
 containerhost__system_services:
   - "firewalld"

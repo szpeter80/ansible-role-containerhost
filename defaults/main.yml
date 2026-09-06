@@ -46,3 +46,6 @@ containerhost__openvpn_connection_enabled: false
 # Profile to import, you are expected to put
 # a file with this name + .ovpn extension to Ansible project directory
 containerhost__openvpn_connection_profile_fn: "vpn-connection"
+
+# Install Zabbix Agent 2 on the host (monitor OS)
+containerhost__install_zabbix_agent_to_managed_host: false

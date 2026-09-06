@@ -1,0 +1,31 @@
+---
+### https://docs.docker.com/compose/compose-file/
+
+networks:
+  containerhost:
+    external: true
+
+services:
+
+# https://smallstep.com/docs/step-ca/
+  step-ca:
+    image: docker.io/smallstep/step-ca:0.30.2
+    networks:
+      - containerhost
+    ports:
+      - "9000:9000"
+    environment:
+      - TZ={{ containerhost__time_zone }}
+      - LANG=en_US.utf8
+    restart: unless-stopped
+    volumes:
+#      Adding "U" to the mount makes the owner the container default user
+      - /home/{{ ansible_user }}/container-projects/{{containerhost__container_project_name}}/step-data:/home/step:U,z,rw
+### Init
+    entrypoint: ["/bin/sleep"]
+    command: ["36000"]
+
+### Run
+#    entrypoint: ["/bin/bash" "/entrypoint.sh"]
+#    command: ["/usr/local/bin/step-ca" "--password-file" "/home/step/secrets/password" "/home/step/config/ca.json"]
+

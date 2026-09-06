@@ -27,20 +27,27 @@ ansible-playbook -e containerhost__container_project_name=zabbix containerhost.y
 Valid project names
 -------------------
 
-- **nw_haproxy**: HAProxy for listening on tcp/80 + tcp/443
+- **nw_haproxy**: HAProxy for listening on tcp/80 + tcp/443  
+
 - **db_postgresql**: PostgreSQL database and a container to periodically dump the database
-- **db_mariadb**: MariaDB database, PHPMyadmin and a container to periodically dump the database. Requires: 'nw_haproxy' (for PHPMyadmin)
-- **rclone**: headless container to sync cloud data to local
-- **zabbix**: Zabbix, components: server, web UI, agent2, PDF report maker. Requires: 'nw_haproxy', 'db_postgresql'
+- **db_mariadb**: MariaDB database, PHPMyadmin and a container to periodically dump the database. Requires: 'nw_haproxy' (for PHPMyadmin)  
+
 - **gitlab_ce**: Gitlab CE
+- **gitea (wip)**: Gitea GIT server
+- **jupyterhub (TODO)**: Jupyterhub
 - **lampstack**: PHP-FPM + NGINX to run PHP apps
+- **rclone**: headless container to sync cloud data to local
 - **sonatype_nexus_ce**: Sonatype Nexus container registry
+- **squid (wip)**: HTTP proxy
+- **step_ca (wip)**: Step CA, a small Root CA + ACME server
 - **wordpress (wip: sub-dir + reverse proxy)**: Wordpress in a containter (self updating)
+- **zabbix**: Zabbix, components: server, web UI, agent2, PDF report maker. Requires: 'nw_haproxy', 'db_postgresql'
+- **zabbix_proxy (wip)**: Zabbix, only proxy + agent2 component
 
 Setup
 -----
 
-1. Prepare a linux host ("managed host", RHEL10 or compatible, 2 CPU, 8G RAM, 100G storage with pleanty space on /home)
+1. Prepare a linux host ("managed host", RHEL10 or compatible, 2 CPU, 8G RAM, 100G storage with plenty space on /home)
     1. it should be reachable via SSH by Ansible
     1. A minimum package selection is enouh, the role will install the required packages
     1. If cloned from a template, regenerate ssh server keys.  
